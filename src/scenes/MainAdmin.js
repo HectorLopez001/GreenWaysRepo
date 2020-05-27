@@ -301,7 +301,6 @@ const mapDispatchToProps = dispatch => {
     goGestionUsuariosRegistrados: () =>
       dispatch(MainAdminActions.goGestionUsuariosRegistrados()),
     goGestionComercios: () => dispatch(MainAdminActions.goGestionComercios())
-    // terminarLoader: () => dispatch(MainAdminActions.terminarLoader())
   };
 };
 
