@@ -1,0 +1,23 @@
+yarn add v1.22.4
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+info fsevents@1.2.12: The platform "linux" is incompatible with this module.
+info "fsevents@1.2.12" is an optional dependency and failed compatibility check. Excluding it from installation.
+info fsevents@2.1.2: The platform "linux" is incompatible with this module.
+info "fsevents@2.1.2" is an optional dependency and failed compatibility check. Excluding it from installation.
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+success Saved 1 new dependency.
+info Direct dependencies
+└─ react-native-router-flux@4.2.0
+info All dependencies
+└─ react-native-router-flux@4.2.0
+$ patch-package
+patch-package 6.2.2
+Applying patches...
+@react-navigation/native/react-native-safe-area-view@0.14.8 ✔
+react-native@0.62.1 ✔
+react-native-fetch-blob@0.10.8 ✔
+react-native-maps@0.27.1 ✔
+react-navigation-tabs/react-native-safe-area-view@0.14.8 ✔
+Done in 4.82s.
