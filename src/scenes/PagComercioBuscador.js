@@ -431,7 +431,7 @@ class PagComercioBuscador extends Component {
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 alignContent: "flex-start",
-                height: "2.6%"
+                height: winHeight * 0.001
               }}
             >
               <View style={{ marginRight: winWidth * 0.01 }}>
@@ -442,7 +442,7 @@ class PagComercioBuscador extends Component {
                   <Stars
                     default={this.state.notaMedia}
                     display={this.state.notaMedia}
-                    backingColor={"#EEEEEE"}
+                    //backingColor={"#EEEEEE"}
                     count={5}
                     half={true}
                     disabled={true}
@@ -471,7 +471,7 @@ class PagComercioBuscador extends Component {
             <View
               style={
                 this.state.datas == null
-                  ? { marginTop: winHeight * 0.01 }
+                  ? { marginTop: winHeight * 0.035 }
                   : { marginTop: 0 }
               }
             >
@@ -504,8 +504,7 @@ class PagComercioBuscador extends Component {
                           flex: 0.8,
                           resizeMode: "cover",
                           marginTop: 5,
-                          marginBottom: 5,
-                          borderRadius: 50
+                          marginBottom: 5
                         }}
                         resizeMethod={"resize"}
                         source={{
@@ -514,6 +513,7 @@ class PagComercioBuscador extends Component {
                         placeholderSource={require("GreenWaysProject/images/time.png")}
                         isShowActivity={false}
                         placeholderStyle={styles.imgPlaceholder}
+                        borderRadius={50}
                       />
                     </View>
                     <View style={styles.container3}>
@@ -525,9 +525,9 @@ class PagComercioBuscador extends Component {
                   <View style={styles.container2}>
                     <View>
                       <Stars
-                        default={rowData.nota}
-                        display={rowData.nota}
-                        backingColor={"#EEEEEE"}
+                        default={parseFloat(rowData.nota)}
+                        display={parseFloat(rowData.nota)}
+                        //backingColor={"#EEEEEE"}
                         count={5}
                         half={true}
                         disabled={true}

@@ -174,7 +174,7 @@ class PagComercio extends Component {
                     <Stars
                       default={this.state.notaMedia}
                       display={this.state.notaMedia}
-                      backingColor={"#EEEEEE"}
+                     // backingColor={"#EEEEEE"}
                       count={5}
                       half={true}
                       disabled={true}
@@ -299,7 +299,7 @@ class PagComercio extends Component {
                       <Stars
                         default={rowData.nota}
                         display={rowData.nota}
-                        backingColor={"#EEEEEE"}
+                       // backingColor={"#EEEEEE"}
                         count={5}
                         half={true}
                         disabled={true}
