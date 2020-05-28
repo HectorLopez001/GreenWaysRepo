@@ -579,7 +579,10 @@ class PagComercio extends Component {
             >
               <TouchableOpacity
                 onPress={() => {
-                  if (this.state.sceneAnterior === "catalogo") {
+
+                  // alert(this.state.sceneComerciosAnterior + " " + this.state.sceneAnterior);
+
+                  // if (this.state.sceneAnterior === "catalogo") {
                     if (
                       this.state.sceneComerciosAnterior ===
                       "listaComerciosDetalle"
@@ -587,16 +590,16 @@ class PagComercio extends Component {
                       Actions.popTo("ComerciosDetalle");
                     } else {
                       if (
-                        this.state.sceneComerciosAnterior == "listaComercios"
+                        this.state.sceneComerciosAnterior === "listaComercios"
                       ) {
                         Actions.popTo("Comercios");
                       }
                     }
-                  } else {
-                    if (this.state.sceneAnterior == "listaComercios") {
-                      Actions.pop();
-                    }
-                  }
+                  // } else {
+                  //   if (this.state.sceneAnterior === "listaComercios") {
+                  //     Actions.pop();
+                  //   }
+                  // }
                 }}
               >
                 <View
@@ -627,7 +630,6 @@ const mapStateToProps = state => {
   return {
     isLogged: state.login.isLogged,
     hasError: state.register.hasError
-    // isLoading: state.register.isLoading
   };
 };
 
