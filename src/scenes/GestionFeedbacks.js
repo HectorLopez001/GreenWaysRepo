@@ -325,7 +325,7 @@ class GestionFeedbacks extends Component {
                         : { flex: 0 }
                     }
                   >
-                    <ImageLoad
+                    <Image
                       style={
                         rowData.primerFeedback === "0"
                           ? styles.imgRevisado
@@ -335,9 +335,6 @@ class GestionFeedbacks extends Component {
                         uri: "https://thegreenways.es/" + rowData.imagen
                       }}
                       resizeMethod={"resize"}
-                      placeholderSource={require("GreenWaysProject/images/time.png")}
-                      isShowActivity={false}
-                      placeholderStyle={styles.imgPlaceholder}
                     />
 
                     <View
@@ -607,7 +604,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   imgRevisado: {
-    flex: 1,
+    //flex: 1,
     //height: winHeight,
     resizeMode: "cover",
     borderColor: "#8E8E8E",

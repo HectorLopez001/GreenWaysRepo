@@ -459,7 +459,7 @@ class PagProducto extends Component {
                         }}
                         placeholderSource={require("GreenWaysProject/images/time.png")}
                         isShowActivity={false}
-                        placeholderStyle={styles.imgPlaceholder}
+                        placeholderStyle={styles.imgPlaceholder2}
                         borderRadius={50}
                       />
                     </View>
@@ -612,9 +612,15 @@ const styles = StyleSheet.create({
     marginLeft: 5
   },
   imgPlaceholder: {
-    height: 65,
+    height: 80,
     resizeMode: "contain",
-    marginTop: 30,
-    marginBottom: 30
+    marginTop: 20,
+    marginBottom: 20
+  },
+  imgPlaceholder2: {
+    height: 28,
+    resizeMode: "contain",
+    marginTop: 5,
+    marginBottom: 5
   },
 });

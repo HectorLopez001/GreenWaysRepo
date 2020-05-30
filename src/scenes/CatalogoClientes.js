@@ -599,8 +599,6 @@ const styles = StyleSheet.create({
     height: 150,
     resizeMode: "cover",
     marginBottom: 10,
-    justifyContent: "center",
-    alignItems: "center",
     borderColor: "#8E8E8E",
     borderWidth: 2,
     marginRight: 7

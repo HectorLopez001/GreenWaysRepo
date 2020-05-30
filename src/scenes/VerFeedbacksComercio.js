@@ -279,6 +279,7 @@ class PagComercio extends Component {
                         placeholderSource={require("GreenWaysProject/images/time.png")}
                         isShowActivity={false}
                         placeholderStyle={styles.imgPlaceholder}
+                        borderRadius={50}
                       />
                     </View>
                     <View style={styles.container3}>
@@ -297,8 +298,8 @@ class PagComercio extends Component {
                   <View style={styles.container2}>
                     <View>
                       <Stars
-                        default={rowData.nota}
-                        display={rowData.nota}
+                        default={parseFloat(rowData.nota)}
+                        display={parseFloat(rowData.nota)}
                        // backingColor={"#EEEEEE"}
                         count={5}
                         half={true}

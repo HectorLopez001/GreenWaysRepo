@@ -207,7 +207,7 @@ class GestionDenuncias extends Component {
                   paddingRight: 10
                 }}
               >
-                <ImageLoad
+                <Image
                   style={{
                     height: 26,
                     width: 26,
@@ -217,9 +217,6 @@ class GestionDenuncias extends Component {
                   source={{
                     uri: "https://thegreenways.es/upload/images/info8.png"
                   }}
-                  placeholderSource={require("GreenWaysProject/images/time.png")}
-                  isShowActivity={false}
-                  placeholderStyle={styles.imgPlaceholder}
                 />
               </TouchableOpacity>
             </View>

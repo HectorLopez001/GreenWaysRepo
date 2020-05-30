@@ -176,8 +176,6 @@ class PagProductoAdmin extends Component {
                     resizeMode: "cover",
                     width: winWidth * 0.84,
                     height: winHeight * 0.4,
-                    justifyContent: "center",
-                    alignItems: "center",
                     borderColor: "#8E8E8E",
                     borderWidth: 2,
                     marginBottom: 8
@@ -428,9 +426,9 @@ const styles = StyleSheet.create({
     marginBottom: "1%"
   },
   imgPlaceholder: {
-    height: 65,
+    height: 80,
     resizeMode: "contain",
-    marginTop: 30,
-    marginBottom: 30
+    marginTop: 20,
+    marginBottom: 20
   },
 });

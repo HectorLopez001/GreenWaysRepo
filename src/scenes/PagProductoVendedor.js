@@ -180,8 +180,6 @@ class PagProductoVendedor extends Component {
                 resizeMode: "cover",
                 width: "90%",
                 height: "50%",
-                justifyContent: "center",
-                alignItems: "center",
                 borderColor: "#8E8E8E",
                 borderWidth: 2,
                 marginBottom: 8
@@ -350,9 +348,9 @@ const styles = StyleSheet.create({
     marginLeft: 5
   },
   imgPlaceholder: {
-    height: 65,
+    height: 80,
     resizeMode: "contain",
-    marginTop: 30,
-    marginBottom: 30
+    marginTop: 20,
+    marginBottom: 20
   },
 });
