@@ -4,10 +4,7 @@ import { Actions } from "react-native-router-flux";
 import {
   View,
   Text,
-  Button,
   StyleSheet,
-  BackHandler,
-  Platform,
   TouchableOpacity,
   Image,
   Dimensions,
@@ -88,15 +85,13 @@ class MainAdmin extends Component {
                 this.setState(
                   {
                     hayFeedbacksOUsuariosCompradores: "no"
-                  },
-                  function() {}
+                  }
                 );
               } else {
                 this.setState(
                   {
                     hayFeedbacksOUsuariosCompradores: "si"
-                  },
-                  function() {}
+                  }
                 );
               }
 
@@ -105,16 +100,16 @@ class MainAdmin extends Component {
             .catch(error => {
               console.error(error);
             });
+            
         } else {
           this.setState({
             hayFeedbacksOUsuariosCompradores: "si"
           });
           this.parteDatosComercios();
-        }
 
-        /*setTimeout(() => {
-          this.state.isStorageLoaded == true ? this.terminarLoader() : null;
-        }, 3000);*/
+          this.props.flick();
+        }  
+        
       })
       .catch(error => {
         console.error(error);
@@ -144,78 +139,74 @@ class MainAdmin extends Component {
         })
       ]),
       {
-        iterations: 100
+        iterations: 1000
       }
     ).start();
   }
+  
 
-  parteDatosComercios() {
-    return fetch("https://thegreenways.es/numeroDenunciasRevisables.php", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({})
-    })
-      .then(response3 => response3.json())
-      .then(responseJson3 => {
-        if (responseJson3 == "No Results Found") {
-          return fetch(
-            "https://thegreenways.es/numeroHomeComerciosYCatalogosRevisables.php",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({})
-            }
-          )
-            .then(response4 => response4.json())
-            .then(responseJson4 => {
-              if (responseJson4 == "No Results Found") {
-                this.setState({
-                  hayDenunciasOHomeComerciosOCatalogos: "no",
-                  isStorageLoaded: true
-                });
-              } else {
-                this.setState({
-                  hayDenunciasOHomeComerciosOCatalogos: "si",
-                  isStorageLoaded: true
-                });
-              }
-
-              setTimeout(() => {
-                this.cambioColor();
-              }, 500);
-            })
-            .catch(error => {
-              console.error(error);
-            });
-        } else {
-          this.setState({
-            hayDenunciasOHomeComerciosOCatalogos: "si",
-            isStorageLoaded: true
-          });
-
-          setTimeout(() => {
-            this.cambioColor();
-          }, 500);
-        }
-      })
-      .catch(error => {
-        console.error(error);
+  async parteDatosComercios() {
+    try {
+      const response3 = await fetch("https://thegreenways.es/numeroDenunciasRevisables.php", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
       });
+      const responseJson3 = await response3.json();
+      if (responseJson3 == "No Results Found") {
+        return fetch("https://thegreenways.es/numeroHomeComerciosYCatalogosRevisables.php", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({})
+        })
+          .then(response4 => response4.json())
+          .then(responseJson4 => {
+            if (responseJson4 == "No Results Found") {
+              this.setState({
+                hayDenunciasOHomeComerciosOCatalogos: "no",
+                isStorageLoaded: true
+              });
+            }
+            else {
+              this.setState({
+                hayDenunciasOHomeComerciosOCatalogos: "si",
+                isStorageLoaded: true
+              });
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      else {
+        this.setState({
+          hayDenunciasOHomeComerciosOCatalogos: "si",
+          isStorageLoaded: true
+        });
+      }
+    }
+    catch (error_1) {
+      console.error(error_1);
+    }
   }
 
   render() {
+
+    this.cambioColor();
+
     var color = this.state.backgroundColor.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(121, 183, 0, 0.4)", "rgba(121,183,0, 0.8)"]
     });
 
     let { isStorageLoaded } = this.state;
+    let { flicker } = this.props;
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
     } else {
@@ -238,7 +229,7 @@ class MainAdmin extends Component {
                   borderColor: "black",
                   borderRadius: 20,
                   backgroundColor:
-                    this.state.hayDenunciasOHomeComerciosOCatalogos == "si"
+                    this.state.hayDenunciasOHomeComerciosOCatalogos == "si" && flicker === "MainAdmin"
                       ? color
                       : "#79B700",
                   marginLeft: "2%",
@@ -268,7 +259,7 @@ class MainAdmin extends Component {
                   borderColor: "black",
                   borderRadius: 20,
                   backgroundColor:
-                    this.state.hayFeedbacksOUsuariosCompradores == "si"
+                    this.state.hayFeedbacksOUsuariosCompradores == "si" && flicker === "MainAdmin"
                       ? color
                       : "#79B700",
                   marginLeft: "2%",
@@ -291,7 +282,8 @@ const mapStateToProps = state => {
   return {
     isLogged: state.login.isLogged,
     hasError: state.login.hasError,
-    isLoading: state.login.isLoading
+    isLoading: state.login.isLoading,
+    flicker: state.mainAdmin.flicker
   };
 };
 
@@ -300,7 +292,8 @@ const mapDispatchToProps = dispatch => {
     logout: () => dispatch(LoginActions.logout()),
     goGestionUsuariosRegistrados: () =>
       dispatch(MainAdminActions.goGestionUsuariosRegistrados()),
-    goGestionComercios: () => dispatch(MainAdminActions.goGestionComercios())
+    goGestionComercios: () => dispatch(MainAdminActions.goGestionComercios()),
+    flick: () => dispatch(MainAdminActions.flick())
   };
 };
 

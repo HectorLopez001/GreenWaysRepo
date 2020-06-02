@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Actions } from "react-native-router-flux";
-import AsyncStorage from '@react-native-community/async-storage';
+import { HeaderBackButton } from 'react-navigation-stack';
 
 import {
   StyleSheet,
@@ -15,34 +14,35 @@ import {
 
 import GestionComerciosActions from "./../actions/GestionComercios";
 import Loader from "./../components/Loader";
+import { Actions } from "react-native-router-flux";
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class GestionComercios extends Component {
-  static navigationOptions = {
-    title: "Gestión de Comercios",
-    headerRight: (
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            Actions.MainAdmin();
-            return;
-          }}
-          style={{ padding: 10 }}
-        >
-          <Image
-            style={{
-              height: 40,
-              width: 40,
-              resizeMode: "cover"
-            }}
-            resizeMethod={"resize"}
-            source={require("GreenWaysProject/images/home.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+  static navigationOptions = ({ navigation }) => {
+    return{
+      title: "Gestión de Comercios",
+      headerRight: (
+        <View>
+          <TouchableOpacity
+            onPress={navigation.getParam('volverInicio')}
+            style={{ padding: 10 }}
+          >
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: "cover"
+              }}
+              resizeMethod={"resize"}
+              source={require("GreenWaysProject/images/home.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft:(<HeaderBackButton onPress={navigation.getParam('volverInicio') }/>)
+    };
   };
 
   constructor(props) {
@@ -63,7 +63,13 @@ class GestionComercios extends Component {
     };
   }
 
+  volverInicio = () => {
+    this.props.volverInicio();
+  };
+
   async componentDidMount() {
+    this.props.navigation.setParams({volverInicio: this.volverInicio});
+
     return fetch("https://thegreenways.es/numeroDenunciasRevisables.php", {
       method: "POST",
       headers: {
@@ -100,8 +106,6 @@ class GestionComercios extends Component {
               }
               else
               {
-                //this.state.datas2 = responseJson2;
-
                 //TRATAR DATOS
 
                 var aux = Object.entries(responseJson2);
@@ -139,10 +143,6 @@ class GestionComercios extends Component {
                     isStorageLoaded: true
                   });
               }
-
-              setTimeout(() => {
-                this.cambioColor();
-              }, 500);
             })
             .catch(error => {
               console.error(error);
@@ -150,12 +150,10 @@ class GestionComercios extends Component {
         }
         else
         {
-
           this.setState(
             {
               datas: responseJson,
               hayDenuncias: "si",
-              // numDenuncias: Object.keys(this.state.datas).length
               numDenuncias: Object.keys(responseJson).length
             });
 
@@ -180,8 +178,6 @@ class GestionComercios extends Component {
               }
               else
               {
-                //this.state.datas2 = responseJson2;
-
                 //TRATAR DATOS
 
                 var aux = Object.entries(responseJson2);
@@ -218,10 +214,6 @@ class GestionComercios extends Component {
                     isStorageLoaded: true
                   });
               }
-
-              setTimeout(() => {
-                this.cambioColor();
-              }, 500);
             })
             .catch(error => {
               console.error(error);
@@ -252,18 +244,22 @@ class GestionComercios extends Component {
         })
       ]),
       {
-        iterations: 100
+        iterations: 1000
       }
     ).start();
   }
 
   render() {
+
+    this.cambioColor();
+
     var color = this.state.backgroundColor.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(121, 183, 0, 0.4)", "rgba(121,183,0, 0.8)"]
     });
 
     let { isStorageLoaded } = this.state;
+    let {flicker} = this.props; 
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
     } else {
@@ -291,7 +287,9 @@ class GestionComercios extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayDenuncias === "si" ? color : "#79B700",
+                      this.state.hayDenuncias === "si" && flicker === "GestionComercios"
+                      ? color
+                      : "#79B700",
                     marginLeft: "2%",
                     marginRight: "2%",
                     justifyContent: "center",
@@ -323,7 +321,9 @@ class GestionComercios extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayHomeComercios === "si" ? color : "#79B700",
+                      this.state.hayHomeComercios === "si" && flicker === "GestionComercios"
+                      ? color
+                      : "#79B700",
                     marginLeft: "2%",
                     marginRight: "2%",
                     justifyContent: "center",
@@ -356,7 +356,9 @@ class GestionComercios extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayCatalogos === "si" ? color : "#79B700",
+                      this.state.hayCatalogos === "si" && flicker === "GestionComercios"
+                      ? color 
+                      : "#79B700",
                     marginLeft: "2%",
                     marginRight: "2%",
                     justifyContent: "center",
@@ -411,7 +413,8 @@ const mapStateToProps = state => {
   return {
     isLogged: state.login.isLogged,
     hasError: state.register.hasError,
-    isLoading: state.register.isLoading
+    isLoading: state.register.isLoading,
+    flicker: state.mainAdmin.flicker
   };
 };
 
@@ -423,7 +426,9 @@ const mapDispatchToProps = dispatch => {
     goGestionCatalogoProductos: () =>
       dispatch(GestionComerciosActions.goGestionCatalogoProductos()),
     goGestionDenuncias: () =>
-      dispatch(GestionComerciosActions.goGestionDenuncias())
+      dispatch(GestionComerciosActions.goGestionDenuncias()),
+    volverInicio: () =>
+      dispatch(GestionComerciosActions.volverInicio())
   };
 };
 

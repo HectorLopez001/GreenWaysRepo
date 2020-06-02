@@ -10,6 +10,7 @@ import CambiarPassRegistrado from "./../reducers/CambiarPassRegistrado";
 import CambiarPassVendedor from "./../reducers/CambiarPassVendedor";
 import Main from "./../reducers/Main";
 import MainVendedor from "./../reducers/MainVendedor";
+import MainAdmin from "./../reducers/MainAdmin";
 import Insertar from "./../reducers/Insertar";
 import GestionComercios from "./../reducers/GestionComercios";
 import GestionComercios2 from "./../reducers/GestionComercios2";
@@ -28,6 +29,7 @@ export default combineReducers({
   register: Register,
   main: Main,
   mainVendedor: MainVendedor,
+  mainAdmin: MainAdmin,
   insertar: Insertar,
   perfilRegistrado: PerfilRegistrado,
   modificar: Modificar,

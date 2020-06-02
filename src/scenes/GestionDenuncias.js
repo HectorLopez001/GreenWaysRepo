@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import AsyncStorage from '@react-native-community/async-storage';
 import ImageLoad from "react-native-image-placeholder";
+import { HeaderBackButton } from 'react-navigation-stack';
 
 import {
   StyleSheet,
@@ -23,29 +24,29 @@ const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class GestionDenuncias extends Component {
-  static navigationOptions = {
-    title: "Denuncias",
-    headerRight: (
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            Actions.MainAdmin();
-            return;
-          }}
-          style={{ padding: winHeight * 0.015 }}
-        >
-          <Image
-            style={{
-              height: 40,
-              width: 40,
-              resizeMode: "cover"
-            }}
-            resizeMethod={"resize"}
-            source={require("GreenWaysProject/images/home.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+  static navigationOptions = ({ navigation }) => {
+    return{
+      title: "Denuncias",
+      headerRight: (
+        <View>
+          <TouchableOpacity
+            onPress={navigation.getParam('volverInicio')}
+            style={{ padding: winHeight * 0.015 }}
+          >
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: "cover"
+              }}
+              resizeMethod={"resize"}
+              source={require("GreenWaysProject/images/home.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft:(<HeaderBackButton onPress={navigation.getParam('volverGestionComercios') }/>)
+    };
   };
 
   constructor(props) {
@@ -60,7 +61,21 @@ class GestionDenuncias extends Component {
     };
   }
 
+  volverInicio = () => {
+    this.props.volverInicio();
+  };
+
+  volverGestionComercios = () => {
+    this.props.volverGestionComercios();
+  };
+
   async componentDidMount() {
+
+    this.props.navigation.setParams({
+      volverInicio: this.volverInicio,
+      volverGestionComercios: this.volverGestionComercios
+    });
+
     await AsyncStorage.getItem("filaInicioDenunciaFinal").then(value => {
       this.setState({
         coordenadaListView: value
@@ -129,9 +144,9 @@ class GestionDenuncias extends Component {
           AsyncStorage.setItem("filaInicioDenunciaFinal", (0).toString());
         }
 
-        setTimeout(() => {
-          this.cambioColor();
-        }, 1000);
+        // setTimeout(() => {
+        //   this.cambioColor();
+        // }, 1000);
       })
       .catch(error => {
         console.error(error);
@@ -157,7 +172,7 @@ class GestionDenuncias extends Component {
         })
       ]),
       {
-        iterations: 100
+        iterations: 1000
       }
     ).start();
   }
@@ -180,11 +195,14 @@ class GestionDenuncias extends Component {
   }
 
   render() {
+
+    this.cambioColor();
+
     var coloro = this.state.backgroundColor.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(121, 183, 0, 0.15)", "rgba(121, 183, 0, 0.35)"]
     });
-    let { click } = this.props;
+    let { click, flicker } = this.props;
     let { isStorageLoaded } = this.state;
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
@@ -269,7 +287,7 @@ class GestionDenuncias extends Component {
                     marginBottom: winHeight * 0.015,
                     backgroundColor:
                       rowData.revisar === "0" &&
-                      !click.includes(rowData.idDenuncia+"denuncia")
+                      !click.includes(rowData.idDenuncia+"denuncia") && flicker === "GestionDenuncias"
                         ? coloro
                         : null
                   }}
@@ -417,7 +435,8 @@ class GestionDenuncias extends Component {
 
 const mapStateToProps = state => {
   return {
-    click: state.gestionDenuncias.click
+    click: state.gestionDenuncias.click,
+    flicker: state.mainAdmin.flicker
   };
 };
 
@@ -447,7 +466,11 @@ const mapDispatchToProps = dispatch => {
     denunciaRevisada: idDenuncia =>
       dispatch(GestionComerciosActions.denunciaRevisada(idDenuncia)),
     clickado: idDenuncia =>
-      dispatch(GestionComerciosActions.clickado3(idDenuncia))
+      dispatch(GestionComerciosActions.clickado3(idDenuncia)),
+    volverInicio: () =>
+      dispatch(GestionComerciosActions.volverInicio()),
+    volverGestionComercios: () =>
+      dispatch(GestionComerciosActions.goGestionComercios2())
   };
 };
 

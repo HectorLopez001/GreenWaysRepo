@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Actions } from "react-native-router-flux";
 import AsyncStorage from '@react-native-community/async-storage';
+import { HeaderBackButton } from 'react-navigation-stack';
 
 import {
   StyleSheet,
@@ -21,37 +21,35 @@ const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class PerfilAdmin extends Component {
-  static navigationOptions = {
-    title: "Perfil de Usuario",
-    headerRight: (
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            Actions.MainAdmin();
-            return;
-          }}
-          style={{ padding: 10 }}
-        >
-          <Image
-            style={{
-              height: 40,
-              width: 40,
-              resizeMode: "cover"
-            }}
-            resizeMethod={"resize"}
-            source={require("GreenWaysProject/images/home.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+  static navigationOptions = ({ navigation }) => {
+    return{
+      title: "Perfil de Usuario",
+      headerRight: (
+        <View>
+          <TouchableOpacity
+            onPress={navigation.getParam('goPrincipal')}
+            style={{ padding: 10 }}
+          >
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: "cover"
+              }}
+              resizeMethod={"resize"}
+              source={require("GreenWaysProject/images/home.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft:(<HeaderBackButton onPress={navigation.getParam('goPrincipal') }/>)
+    };
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      // nombreComercio: null,
-      // isLoading: true,
       idUsuario: null,
       nombreUsuario: null,
       emailUsuario: null,
@@ -60,7 +58,16 @@ class PerfilAdmin extends Component {
     };
   }
 
+  goPrincipal = () => {
+    this.props.goPrincipal();
+  };
+
   async componentDidMount() {
+
+    this.props.navigation.setParams({
+      goPrincipal: this.goPrincipal
+    });
+
     await AsyncStorage.getItem("name").then(value => {
       this.setState({
         nombreUsuario: value
@@ -227,7 +234,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     goPrincipal: () => dispatch(PerfilAdminActions.goPrincipal()),
-    logout: () => dispatch(LoginActions.logout())
+    logout: () => dispatch(LoginActions.logout()),
   };
 };
 
@@ -249,7 +256,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-
   button: {
     padding: 10,
     backgroundColor: "#36ada4",

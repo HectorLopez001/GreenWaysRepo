@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
+import { HeaderBackButton } from 'react-navigation-stack';
 
 import {
   StyleSheet,
@@ -19,29 +20,29 @@ const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class GestionUsuariosRegistrados extends Component {
-  static navigationOptions = {
-    title: "Usuarios Registrados",
-    headerRight: (
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            Actions.MainAdmin();
-            return;
-          }}
-          style={{ padding: winHeight * 0.015 }}
-        >
-          <Image
-            style={{
-              height: 40,
-              width: 40,
-              resizeMode: "cover"
-            }}
-            resizeMethod={"resize"}
-            source={require("GreenWaysProject/images/home.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+  static navigationOptions = ({ navigation }) => {
+    return{
+      title: "Usuarios Registrados",
+      headerRight: (
+        <View>
+          <TouchableOpacity
+            onPress={navigation.getParam('volverInicio')}
+            style={{ padding: winHeight * 0.015 }}
+          >
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: "cover"
+              }}
+              resizeMethod={"resize"}
+              source={require("GreenWaysProject/images/home.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft:(<HeaderBackButton onPress={navigation.getParam('volverInicio') }/>)
+    };
   };
 
   constructor(props) {
@@ -59,7 +60,13 @@ class GestionUsuariosRegistrados extends Component {
     };
   }
 
+  volverInicio = () => {
+    this.props.volverInicio();
+  };
+
   async componentDidMount() {
+    this.props.navigation.setParams({volverInicio: this.volverInicio});
+    
     return fetch("https://thegreenways.es/numeroFeedbacksRevisables.php", {
       method: "POST",
       headers: {
@@ -89,7 +96,6 @@ class GestionUsuariosRegistrados extends Component {
             .then(responseJson2 => {
               if (responseJson2 === "No Results Found")
               {
-
                 this.setState({
                     hayUsuariosCompradores: "no",
                     isStorageLoaded: true
@@ -97,19 +103,13 @@ class GestionUsuariosRegistrados extends Component {
               }
               else
               {
-
                 this.setState({
                     datas2: responseJson2,
                     hayUsuariosCompradores: "si",
                     numUsuariosCompradores: Object.keys(responseJson2).length,
-                    //numUsuariosCompradores: Object.keys(this.state.datas2).length,
                     isStorageLoaded: true
                   });
               }
-
-              setTimeout(() => {
-                this.cambioColor();
-              }, 500);
             })
             .catch(error => {
               console.error(error);
@@ -120,7 +120,6 @@ class GestionUsuariosRegistrados extends Component {
           this.setState({
               datas: responseJson,
               hayFeedbacks: "si",
-            //  numFeedbacks: Object.keys(this.state.datas).length
               numFeedbacks: Object.keys(responseJson).length
             });
 
@@ -138,32 +137,20 @@ class GestionUsuariosRegistrados extends Component {
             .then(responseJson2 => {
               if (responseJson2 === "No Results Found")
               {
-
                 this.setState({
                     hayUsuariosCompradores: "no",
                     isStorageLoaded: true
                   });
-
-                setTimeout(() => {
-                  this.cambioColor();
-                }, 500);
               }
               else
               {
-
                 this.setState({
                     datas2: responseJson2,
                     hayUsuariosCompradores: "si",
                     numUsuariosCompradores: Object.keys(responseJson2).length,
-                    //numUsuariosCompradores: Object.keys(this.state.datas2).length,
                     isStorageLoaded: true
                   });
               }
-
-              setTimeout(() => {
-                this.cambioColor();
-              }, 500);
-
             })
             .catch(error => {
               console.error(error);
@@ -194,18 +181,21 @@ class GestionUsuariosRegistrados extends Component {
         })
       ]),
       {
-        iterations: 100
+        iterations: 1000
       }
     ).start();
   }
 
   render() {
+
+    this.cambioColor();
+
     var color = this.state.backgroundColor.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(121, 183, 0, 0.4)", "rgba(121,183,0, 0.8)"]
     });
-
     let { isStorageLoaded } = this.state;
+    let {flicker} = this.props;    
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
     } else {
@@ -229,7 +219,7 @@ class GestionUsuariosRegistrados extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayUsuariosCompradores === "si"
+                      this.state.hayUsuariosCompradores === "si" && flicker === "GestionUsuariosRegistrados"
                         ? color
                         : "#79B700",
                     marginLeft: "2%",
@@ -265,7 +255,9 @@ class GestionUsuariosRegistrados extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayFeedbacks === "si" ? color : "#79B700",
+                      this.state.hayFeedbacks === "si" && flicker === "GestionUsuariosRegistrados"
+                      ? color 
+                      : "#79B700",
                     marginLeft: "2%",
                     marginRight: "2%",
                     justifyContent: "center",
@@ -320,7 +312,8 @@ const mapStateToProps = state => {
   return {
     isLogged: state.login.isLogged,
     hasError: state.register.hasError,
-    isLoading: state.register.isLoading
+    isLoading: state.register.isLoading,
+    flicker: state.mainAdmin.flicker
   };
 };
 
@@ -331,7 +324,9 @@ const mapDispatchToProps = dispatch => {
     goGestionFeedbacks: () =>
       dispatch(GestionUsuariosRegistradosActions.goGestionFeedbacks()),
     goGestionPerfilesUsuario: () =>
-      dispatch(GestionUsuariosRegistradosActions.goGestionPerfilesUsuario())
+      dispatch(GestionUsuariosRegistradosActions.goGestionPerfilesUsuario()),
+    volverInicio: () =>
+      dispatch(GestionUsuariosRegistradosActions.volverInicio())
   };
 };
 

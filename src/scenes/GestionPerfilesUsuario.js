@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import AsyncStorage from '@react-native-community/async-storage';
 import ImageLoad from "react-native-image-placeholder";
+import { HeaderBackButton } from 'react-navigation-stack';
 
 import {
   StyleSheet,
@@ -23,29 +24,29 @@ const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class GestionPerfilesUsuario extends Component {
-  static navigationOptions = {
-    title: "Perfiles de Usuario",
-    headerRight: (
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            Actions.MainAdmin();
-            return;
-          }}
-          style={{ padding: winHeight * 0.015 }}
-        >
-          <Image
-            style={{
-              height: 40,
-              width: 40,
-              resizeMode: "cover"
-            }}
-            resizeMethod={"resize"}
-            source={require("GreenWaysProject/images/home.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+  static navigationOptions = ({ navigation }) => {
+    return{
+      title: "Perfiles de Usuario",
+      headerRight: (
+        <View>
+          <TouchableOpacity
+            onPress={navigation.getParam('volverInicio')}
+            style={{ padding: winHeight * 0.015 }}
+          >
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: "cover"
+              }}
+              resizeMethod={"resize"}
+              source={require("GreenWaysProject/images/home.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft:(<HeaderBackButton onPress={navigation.getParam('volverGestionUsuariosRegistrados') }/>)
+    };
   };
 
   constructor(props) {
@@ -62,7 +63,21 @@ class GestionPerfilesUsuario extends Component {
     };
   }
 
+  volverInicio = () => {
+    this.props.volverInicio();
+  };
+
+  volverGestionUsuariosRegistrados = () => {
+    this.props.volverGestionUsuariosRegistrados();
+  };
+
   async componentDidMount() {
+
+    this.props.navigation.setParams({
+      volverInicio: this.volverInicio,
+      volverGestionUsuariosRegistrados: this.volverGestionUsuariosRegistrados
+    });
+    
     await AsyncStorage.getItem("filaInicioPerfilUsuarioFinal").then(value => {
       this.setState({
         coordenadaListView: value
@@ -127,9 +142,9 @@ class GestionPerfilesUsuario extends Component {
           );
         }
 
-        setTimeout(() => {
-          this.cambioColor();
-        }, 1000);
+        // setTimeout(() => {
+        //   this.cambioColor();
+        // }, 1000);
 
       })
       .catch(error => {
@@ -156,7 +171,7 @@ class GestionPerfilesUsuario extends Component {
         })
       ]),
       {
-        iterations: 100
+        iterations: 1000
       }
     ).start();
   }
@@ -181,11 +196,14 @@ class GestionPerfilesUsuario extends Component {
   }
 
   render() {
+
+    this.cambioColor();
+
     var coloro = this.state.backgroundColor.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(121, 183, 0, 0.15)", "rgba(121, 183, 0, 0.35)"]
     });
-    let { click } = this.props;
+    let { click, flicker } = this.props;
     let { isStorageLoaded } = this.state;
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
@@ -267,7 +285,8 @@ class GestionPerfilesUsuario extends Component {
                     marginTop: winHeight * 0.015,
                     marginBottom: winHeight * 0.015,
                     backgroundColor:
-                      rowData.revisar === "0" && !click.includes(rowData.name) // click != rowData.nombreComercio
+                      rowData.revisar === "0" &&
+                      !click.includes(rowData.name) && flicker === "GestionPerfilesUsuario" // click != rowData.nombreComercio
                         ? coloro
                         : null
                   }}
@@ -382,7 +401,8 @@ class GestionPerfilesUsuario extends Component {
 
 const mapStateToProps = state => {
   return {
-    click: state.gestionPerfilesUsuario.click
+    click: state.gestionPerfilesUsuario.click,
+    flicker: state.mainAdmin.flicker
   };
 };
 
@@ -405,7 +425,11 @@ const mapDispatchToProps = dispatch => {
         GestionUsuariosRegistradosActions.perfilUsuarioRevisado(nombreUsuario)
       ),
     clickado: nombreUsuario =>
-      dispatch(GestionUsuariosRegistradosActions.clickado(nombreUsuario))
+      dispatch(GestionUsuariosRegistradosActions.clickado(nombreUsuario)),
+    volverInicio: () =>
+      dispatch(GestionUsuariosRegistradosActions.volverInicio()),
+    volverGestionUsuariosRegistrados: () =>
+      dispatch(GestionUsuariosRegistradosActions.goGestionUsuariosRegistrados3())
   };
 };
 

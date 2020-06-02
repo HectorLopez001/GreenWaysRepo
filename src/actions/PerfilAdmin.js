@@ -4,7 +4,8 @@ import { Actions } from "react-native-router-flux";
 const goPrincipal = () => {
   Actions.MainAdmin();
   return {
-    type: ActionTypes.MAINADMIN
+    type: ActionTypes.MAINADMIN,
+    flicker: "MainAdmin"
   };
 };
 

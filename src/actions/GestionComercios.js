@@ -28,28 +28,48 @@ const filaClickada3 = string => {
 const goPrincipal = () => {
   Actions.MainAdmin();
   return {
-    type: ActionTypes.MAINADMIN
+    type: ActionTypes.MAINADMIN,
+    flicker: "MainAdmin"
   };
 };
 
 const goGestionDenuncias = () => {
   Actions.GestionDenuncias();
   return {
-    type: ActionTypes.GESTION_DENUNCIAS
+    type: ActionTypes.GESTION_DENUNCIAS,
+    flicker: "GestionDenuncias"
   };
 };
 
 const goGestionPagComercio = () => {
   Actions.GestionPagComercio();
   return {
-    type: ActionTypes.GESTION_PAG_COMERCIO
+    type: ActionTypes.GESTION_PAG_COMERCIO,
+    flicker: "GestionPagComercio"
   };
 };
 
 const goGestionCatalogoProductos = () => {
   Actions.GestionCatalogoProductos();
   return {
-    type: ActionTypes.GESTION_CATALOGO_PRODUCTOS
+    type: ActionTypes.GESTION_CATALOGO_PRODUCTOS,
+    flicker: "GestionCatalogoProductos"
+  };
+};
+
+const goCatalogoProductosAdmin = () => {
+  Actions.CatalogoProductosAdmin();
+  return {
+    type: ActionTypes.CATALOGO_PRODUCTOS_ADMIN,
+    flicker: "CatalogoProductosAdmin"
+  };
+};
+
+const volverInicio = () => {
+  Actions.MainAdmin();
+  return {
+    type: ActionTypes.MAINADMIN,
+    flicker: "MainAdmin"
   };
 };
 
@@ -104,15 +124,16 @@ const goGestionComercios = (clicsPantallaActual) => {
     });
 
   return {
-    type: ActionTypes.GESTION_COMERCIOS
+    type: ActionTypes.GESTION_COMERCIOS,
+    flicker: "GestionComercios"
   };
 };
 
 const goGestionComercios2 = () => {
   Actions.GestionComercios();
-
   return {
-    type: ActionTypes.GESTION_COMERCIOS
+    type: ActionTypes.GESTION_COMERCIOS,
+    flicker: "GestionComercios"
   };
 };
 
@@ -166,7 +187,8 @@ const goGestionComercios3 = (clicsPantallaActual) => {
       console.error(error);
     });
   return {
-    type: ActionTypes.GESTION_COMERCIOS
+    type: ActionTypes.GESTION_COMERCIOS,
+    flicker: "GestionComercios"
   };
 };
 
@@ -204,12 +226,12 @@ const volverCatalogo = revisar => {
   };
 };
 
-const goCatalogoProductosAdmin = () => {
-  Actions.CatalogoProductosAdmin();
-  return {
-    type: ActionTypes.CATALOGO_PRODUCTOS_ADMIN
-  };
-};
+// const goCatalogoProductosAdmin = () => {
+//   Actions.CatalogoProductosAdmin();
+//   return {
+//     type: ActionTypes.CATALOGO_PRODUCTOS_ADMIN
+//   };
+// };
 
 const volverGestionCatalogoProductos = (
   nombreComercio,
@@ -874,5 +896,7 @@ export default {
   revisadosHomeComercios,
   mensajeEliminarPagProducto,
   eliminarProductoPagProducto,
-  eliminarDenuncia
+  eliminarDenuncia,
+  goCatalogoProductosAdmin,
+  volverInicio
 };

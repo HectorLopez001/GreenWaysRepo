@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import AsyncStorage from '@react-native-community/async-storage';
 import ImageLoad from "react-native-image-placeholder";
+import { HeaderBackButton } from 'react-navigation-stack';
 
 import {
   StyleSheet,
@@ -23,29 +24,29 @@ const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class GestionFeedbacks extends Component {
-  static navigationOptions = {
-    title: "Feedbacks",
-    headerRight: (
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            Actions.MainAdmin();
-            return;
-          }}
-          style={{ padding: winHeight * 0.015 }}
-        >
-          <Image
-            style={{
-              height: 40,
-              width: 40,
-              resizeMode: "cover"
-            }}
-            resizeMethod={"resize"}
-            source={require("GreenWaysProject/images/home.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+  static navigationOptions = ({ navigation }) => {
+    return{
+      title: "Feedbacks",
+      headerRight: (
+        <View>
+          <TouchableOpacity
+            onPress={navigation.getParam('volverInicio')}
+            style={{ padding: winHeight * 0.015 }}
+          >
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: "cover"
+              }}
+              resizeMethod={"resize"}
+              source={require("GreenWaysProject/images/home.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft:(<HeaderBackButton onPress={navigation.getParam('volverGestionUsuariosRegistrados') }/>)
+    };
   };
 
   constructor(props) {
@@ -60,7 +61,21 @@ class GestionFeedbacks extends Component {
     };
   }
 
+  volverInicio = () => {
+    this.props.volverInicio();
+  };
+
+  volverGestionUsuariosRegistrados = () => {
+    this.props.volverGestionUsuariosRegistrados();
+  };
+
   async componentDidMount() {
+
+    this.props.navigation.setParams({
+      volverInicio: this.volverInicio,
+      volverGestionUsuariosRegistrados: this.volverGestionUsuariosRegistrados
+    });
+
     await AsyncStorage.getItem("filaInicioFeedbackFinal").then(value => {
       this.setState({
         coordenadaListView: value
@@ -118,8 +133,6 @@ class GestionFeedbacks extends Component {
               });
           }
 
-       //   alert(this.state.coordenadaListView);
-
           setTimeout(() => {
             this.refs.listViewa.scrollToIndex({
               animated: true,
@@ -129,12 +142,7 @@ class GestionFeedbacks extends Component {
 
           //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
           AsyncStorage.setItem("filaInicioFeedbackFinal", (0).toString());
-        }
-
-        setTimeout(() => {
-          this.cambioColor();
-        }, 1000);
-        
+        }        
       })
       .catch(error => {
         console.error(error);
@@ -160,7 +168,7 @@ class GestionFeedbacks extends Component {
         })
       ]),
       {
-        iterations: 100
+        iterations: 1000
       }
     ).start();
   }
@@ -183,11 +191,14 @@ class GestionFeedbacks extends Component {
   }
 
   render() {
+
+    this.cambioColor();
+
     var coloro = this.state.backgroundColor.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(121, 183, 0, 0.15)", "rgba(121, 183, 0, 0.35)"]
     });
-    let { click } = this.props;
+    let { click, flicker } = this.props;
     let { isStorageLoaded } = this.state;
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
@@ -277,7 +288,7 @@ class GestionFeedbacks extends Component {
                     marginBottom: winHeight * 0.015,
                     backgroundColor:
                       rowData.revisar === "0" &&
-                      !click.includes(rowData.idFeedback+"feedback")
+                      !click.includes(rowData.idFeedback+"feedback") && flicker === "GestionFeedbacks"
                         ? coloro
                         : null
                   }}
@@ -460,7 +471,8 @@ class GestionFeedbacks extends Component {
 
 const mapStateToProps = state => {
   return {
-    click: state.gestionFeedbacks.click
+    click: state.gestionFeedbacks.click,
+    flicker: state.mainAdmin.flicker
   };
 };
 
@@ -483,7 +495,11 @@ const mapDispatchToProps = dispatch => {
     feedbackRevisado: idFeedback =>
       dispatch(GestionUsuariosRegistradosActions.feedbackRevisado(idFeedback)),
     clickado: idFeedback =>
-      dispatch(GestionUsuariosRegistradosActions.clickado2(idFeedback))
+      dispatch(GestionUsuariosRegistradosActions.clickado2(idFeedback)),
+    volverInicio: () =>
+      dispatch(GestionUsuariosRegistradosActions.volverInicio()),
+    volverGestionUsuariosRegistrados: () =>
+      dispatch(GestionUsuariosRegistradosActions.goGestionUsuariosRegistrados3())
   };
 };
 

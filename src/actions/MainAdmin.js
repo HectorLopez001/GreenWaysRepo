@@ -11,14 +11,16 @@ const isLogged = bool => {
 const goGestionUsuariosRegistrados = () => {
   Actions.GestionUsuariosRegistrados();
   return {
-    type: ActionTypes.GESTION_USUARIOS_REGISTRADOS
+    type: ActionTypes.GESTION_USUARIOS_REGISTRADOS,
+    flicker: "GestionUsuariosRegistrados"
   };
 };
 
 const goGestionComercios = () => {
   Actions.GestionComercios();
   return {
-    type: ActionTypes.GESTION_COMERCIOS
+    type: ActionTypes.GESTION_COMERCIOS,
+    flicker: "GestionComercios"
   };
 };
 
@@ -28,9 +30,18 @@ const terminarLoader = () => {
   };
 };
 
+const flick = () => {  
+  Actions.MainAdmin();
+  return {
+    type: ActionTypes.MAINADMIN,
+    flicker: "MainAdmin"
+  };
+};
+
 export default {
   isLogged,
   goGestionUsuariosRegistrados,
   goGestionComercios,
-  terminarLoader
+  terminarLoader,
+  flick
 };

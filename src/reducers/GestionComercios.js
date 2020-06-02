@@ -4,7 +4,7 @@ const initialState = {
   isLogged: false,
   hasError: false,
   isLoading: false,
-  click: []
+  click: [],
   // click2: []
 };
 

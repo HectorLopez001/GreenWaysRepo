@@ -21,23 +21,43 @@ const filaClickada2 = string => {
 const goPrincipal = () => {
   Actions.MainAdmin();
   return {
-    type: ActionTypes.MAINADMIN
+    type: ActionTypes.MAINADMIN,
+    flicker: "MainAdmin"
   };
 };
 
 const goGestionFeedbacks = () => {
   Actions.GestionFeedbacks();
   return {
-    type: ActionTypes.GESTION_FEEDBACKS
+    type: ActionTypes.GESTION_FEEDBACKS,
+    flicker: "GestionFeedbacks"
   };
 };
 
 const goGestionPerfilesUsuario = () => {
   Actions.GestionPerfilesUsuario();
   return {
-    type: ActionTypes.GESTION_PERFILES_USUARIO
+    type: ActionTypes.GESTION_PERFILES_USUARIO,
+    flicker: "GestionPerfilesUsuario"
   };
 };
+
+const volverInicio = () => {
+  Actions.MainAdmin();
+  return {
+    type: ActionTypes.MAINADMIN,
+    flicker: "MainAdmin"
+  };
+};
+
+const goGestionUsuariosRegistrados3 = () => {
+  Actions.GestionUsuariosRegistrados();
+  return {
+    type: ActionTypes.GESTION_USUARIOS_REGISTRADOS,
+    flicker: "GestionUsuariosRegistrados"
+  };
+};
+
 
 const goGestionUsuariosRegistrados = (clicsPantallaActual) => {
   fetch("https://thegreenways.es/comprobarPerfilesUsuarioRevisados.php", {
@@ -90,7 +110,8 @@ const goGestionUsuariosRegistrados = (clicsPantallaActual) => {
     });
 
   return {
-    type: ActionTypes.GESTION_USUARIOS_REGISTRADOS
+    type: ActionTypes.GESTION_USUARIOS_REGISTRADOS,
+    flicker: "GestionUsuariosRegistrados"
   };
 };
 
@@ -145,7 +166,8 @@ const goGestionUsuariosRegistrados2 = (clicsPantallaActual) => {
     });
 
   return {
-    type: ActionTypes.GESTION_USUARIOS_REGISTRADOS
+    type: ActionTypes.GESTION_USUARIOS_REGISTRADOS,
+    flicker: "GestionUsuariosRegistrados"
   };
 };
 
@@ -171,7 +193,7 @@ const perfilUsuarioRevisado = nombreUsuario => {
       console.error(error);
     });
   return {
-    type: ActionTypes.GESTION_PERFILES_USUARIO
+    type: ActionTypes.GESTION_PERFILES_USUARIO,
   };
 };
 
@@ -270,11 +292,6 @@ const eliminarUsuarioRegistrado = (name, rowId, sceneProcedencia) => {
           Actions.GestionPerfilesUsuario();
         }
         //Parche key: Math.random
-
-        /*   Alert.alert(
-          "Aviso de confirmación",
-          "Se ha borrado el producto " + nombreComercio
-        );*/
       } else {
         Alert.alert("Aviso", responseJson);
       }
@@ -540,6 +557,7 @@ export default {
   goGestionPerfilesUsuario,
   goGestionUsuariosRegistrados,
   goGestionUsuariosRegistrados2,
+  goGestionUsuariosRegistrados3,
   mensajeEliminar,
   mensajeEliminar2,
   mensajeEliminar0,
@@ -549,5 +567,6 @@ export default {
   perfilUsuarioRevisado,
   feedbackRevisado,
   revisadosPerfilesUsuario,
-  mensajeEliminar0bis
+  mensajeEliminar0bis,
+  volverInicio
 };

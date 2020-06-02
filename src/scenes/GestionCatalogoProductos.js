@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Actions } from "react-native-router-flux";
+import { HeaderBackButton } from 'react-navigation-stack';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Actions } from "react-native-router-flux";
 import {
   StyleSheet,
   View,
@@ -21,29 +22,29 @@ const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class GestionCatalogoProductos extends Component {
-  static navigationOptions = {
-    title: "Catálogos de los Comercios",
-    headerRight: (
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            Actions.MainAdmin();
-            return;
-          }}
-          style={{ padding: 10 }}
-        >
-          <Image
-            style={{
-              height: 40,
-              width: 40,
-              resizeMode: "cover"
-            }}
-            resizeMethod={"resize"}
-            source={require("GreenWaysProject/images/home.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+  static navigationOptions = ({ navigation }) => {
+    return{
+      title: "Catálogos de los Comercios",
+      headerRight: (
+        <View>
+          <TouchableOpacity
+            onPress={navigation.getParam('volverInicio')}
+            style={{ padding: 10 }}
+          >
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: "cover"
+              }}
+              resizeMethod={"resize"}
+              source={require("GreenWaysProject/images/home.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft:(<HeaderBackButton onPress={navigation.getParam('volverGestionComercios') }/>)
+    };
   };
 
   constructor(props) {
@@ -67,10 +68,26 @@ class GestionCatalogoProductos extends Component {
     AsyncStorage.setItem("filaInicio", rowNumber.toString());
     // AsyncStorage.setItem("sceneComerciosAnterior", "listaComercios");
 
-    Actions.CatalogoProductosAdmin();
+    this.props.goCatalogoProductosAdmin();
+
+    //Actions.CatalogoProductosAdmin();
   }
 
+  volverInicio = () => {
+    this.props.volverInicio();
+  };
+
+  volverGestionComercios = () => {
+    this.props.volverGestionComercios();
+  };
+
   async componentDidMount() {
+
+    this.props.navigation.setParams({
+      volverInicio: this.volverInicio,
+      volverGestionComercios: this.volverGestionComercios
+    });
+
     await AsyncStorage.getItem("filaInicioFinal").then(value => {
       this.setState({
         coordenadaListView: value
@@ -157,10 +174,10 @@ class GestionCatalogoProductos extends Component {
             );
           }
         }
-        setTimeout(() => {
-          this.cambioColor();
-          //  this.props.revisadosProductos(this.state.nombreComercio);
-        }, 1000);
+        // setTimeout(() => {
+        //   this.cambioColor();
+        //   //  this.props.revisadosProductos(this.state.nombreComercio);
+        // }, 1000);
       })
       .catch(error => {
         console.error(error);
@@ -186,7 +203,7 @@ class GestionCatalogoProductos extends Component {
         })
       ]),
       {
-        iterations: 100
+        iterations: 1000
       }
     ).start();
   }
@@ -197,12 +214,15 @@ class GestionCatalogoProductos extends Component {
   }
 
   render() {
+
+    this.cambioColor();
+
     var coloro = this.state.backgroundColor.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(121, 183, 0, 0.15)", "rgba(121, 183, 0, 0.35)"]
     });
 
-    let { click } = this.props;
+    let { click, flicker } = this.props;
     let { isStorageLoaded } = this.state;
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
@@ -291,7 +311,7 @@ class GestionCatalogoProductos extends Component {
                         marginBottom: 5,
                         backgroundColor:
                           rowData.revisarCatalogo == "0" &&
-                          !click.includes(rowData.nombreComercio)
+                          !click.includes(rowData.nombreComercio) && flicker === "GestionCatalogoProductos"
                             ? // click != rowData.nombreProducto
                               coloro
                             : null
@@ -348,10 +368,8 @@ class GestionCatalogoProductos extends Component {
 
 const mapStateToProps = state => {
   return {
-    //  isLogged: state.login.isLogged,
-    //  hasError: state.register.hasError,
-    //  isLoading: state.register.isLoading
-    click: state.gestionComercios.click
+    click: state.gestionComercios.click,
+    flicker: state.mainAdmin.flicker
   };
 };
 
@@ -360,7 +378,13 @@ const mapDispatchToProps = dispatch => {
     goGestionComercios: () =>
       dispatch(GestionComerciosActions.goGestionComercios2()),
     clickado: nombreComercio =>
-      dispatch(GestionComerciosActions.clickado(nombreComercio))
+      dispatch(GestionComerciosActions.clickado(nombreComercio)),
+    goCatalogoProductosAdmin: () =>
+      dispatch(GestionComerciosActions.goCatalogoProductosAdmin()),
+    volverInicio: () =>
+      dispatch(GestionComerciosActions.volverInicio()),
+    volverGestionComercios: () =>
+      dispatch(GestionComerciosActions.goGestionComercios2())
   };
 };
 

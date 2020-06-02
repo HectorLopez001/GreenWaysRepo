@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import AsyncStorage from '@react-native-community/async-storage';
 import ImageLoad from "react-native-image-placeholder";
+import { HeaderBackButton } from 'react-navigation-stack';
 
 import {
   StyleSheet,
@@ -23,29 +24,29 @@ const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class GestionPagComercio extends Component {
-  static navigationOptions = {
-    title: "Páginas de Comercio",
-    headerRight: (
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            Actions.MainAdmin();
-            return;
-          }}
-          style={{ padding: winHeight * 0.015 }}
-        >
-          <Image
-            style={{
-              height: 40,
-              width: 40,
-              resizeMode: "cover"
-            }}
-            resizeMethod={"resize"}
-            source={require("GreenWaysProject/images/home.png")}
-          />
-        </TouchableOpacity>
-      </View>
-    )
+  static navigationOptions = ({ navigation }) => {
+    return{
+      title: "Páginas de Comercio",
+      headerRight: (
+        <View>
+          <TouchableOpacity
+            onPress={navigation.getParam('volverInicio')}
+            style={{ padding: winHeight * 0.015 }}
+          >
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: "cover"
+              }}
+              resizeMethod={"resize"}
+              source={require("GreenWaysProject/images/home.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft:(<HeaderBackButton onPress={navigation.getParam('volverGestionComercios') }/>)
+    };
   };
 
   constructor(props) {
@@ -60,7 +61,21 @@ class GestionPagComercio extends Component {
     };
   }
 
+  volverInicio = () => {
+    this.props.volverInicio();
+  };
+
+  volverGestionComercios = () => {
+    this.props.volverGestionComercios();
+  };
+
   async componentDidMount() {
+
+    this.props.navigation.setParams({
+      volverInicio: this.volverInicio,
+      volverGestionComercios: this.volverGestionComercios
+    });
+
     await AsyncStorage.getItem("filaInicioPagComercioFinal").then(value => {
       this.setState({
         coordenadaListView: value
@@ -130,12 +145,6 @@ class GestionPagComercio extends Component {
             (0).toString()
           );          
         }
-
-        setTimeout(() => {
-          this.cambioColor();
-          //  this.props.revisadosProductos(this.state.nombreComercio);
-        }, 1000);
-
       })
       .catch(error => {
         console.error(error);
@@ -161,7 +170,7 @@ class GestionPagComercio extends Component {
         })
       ]),
       {
-        iterations: 100
+        iterations: 1000
       }
     ).start();
   }
@@ -187,11 +196,14 @@ class GestionPagComercio extends Component {
   }
 
   render() {
+
+    this.cambioColor();
+
     var coloro = this.state.backgroundColor.interpolate({
       inputRange: [0, 1],
       outputRange: ["rgba(121, 183, 0, 0.15)", "rgba(121, 183, 0, 0.35)"]
     });
-    let { click } = this.props;
+    let { click, flicker } = this.props;
     let { isStorageLoaded } = this.state;
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
@@ -274,7 +286,7 @@ class GestionPagComercio extends Component {
                     marginBottom: winHeight * 0.015,
                     backgroundColor:
                       rowData.revisar === "0" &&
-                      !click.includes(rowData.nombreComercio) // click != rowData.nombreComercio
+                      !click.includes(rowData.nombreComercio) && flicker === "GestionPagComercio"
                         ? coloro
                         : null
                   }}
@@ -394,10 +406,8 @@ class GestionPagComercio extends Component {
 
 const mapStateToProps = state => {
   return {
-    // isLogged: state.login.isLogged,
-    // hasError: state.register.hasError,
-    // isLoading: state.register.isLoading
-    click: state.gestionComercios2.click
+    click: state.gestionComercios2.click,
+    flicker: state.mainAdmin.flicker
   };
 };
 
@@ -418,7 +428,11 @@ const mapDispatchToProps = dispatch => {
     comercioRevisado: nombreComercio =>
       dispatch(GestionComerciosActions.comercioRevisado(nombreComercio)),
     clickado: nombreComercio =>
-      dispatch(GestionComerciosActions.clickado2(nombreComercio))
+      dispatch(GestionComerciosActions.clickado2(nombreComercio)),
+    volverInicio: () =>
+      dispatch(GestionComerciosActions.volverInicio()),
+    volverGestionComercios: () =>
+      dispatch(GestionComerciosActions.goGestionComercios2())
   };
 };
 
