@@ -1083,6 +1083,13 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
   integrity sha512-rk4sWFsmtOw8oyx8SD3KSvawwaK7gRBSEIy2TAwURyGt+3TizssXP1r8nx3zY+R7v2vYYHXZ+k2/GULAT/bcaQ==
 
+"@react-native-community/push-notification-ios@^1.2.0":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@react-native-community/push-notification-ios/-/push-notification-ios-1.2.1.tgz#aa08555726d91736716a4d802c778b98729b6762"
+  integrity sha512-+GmEOPTnkG2C0n7SCt+hAMgN3lMENs3i2rx/tpxAXaUr0qwDwPy+KGLvNwUyifWTZAu7KEPZLkuCixMrO7cnlA==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native-firebase/app-types@6.7.2":
   version "6.7.2"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app-types/-/app-types-6.7.2.tgz#d2e1530af5702e00578914b41468898c10d3289c"
@@ -1096,6 +1103,11 @@
     "@react-native-firebase/app-types" "6.7.2"
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
+
+"@react-native-firebase/messaging@^7.1.4":
+  version "7.1.4"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-7.1.4.tgz#43c8eda22028169a8c31263174b1e4d7b534be14"
+  integrity sha512-K4yMPqs4N/hCbgMib2ES1E9s7DvVG1BXmp8ThFlYBmvGAJcwQbDmCjlxL74HlMISb1EEStU3S9OAUIbeBaYMsw==
 
 "@react-navigation/core@^3.7.5":
   version "3.7.5"
@@ -6382,6 +6394,13 @@ react-native-maps@^0.27.1:
   dependencies:
     deprecated-react-native-listview "0.0.5"
     prop-types "^15.6.0"
+
+react-native-push-notification@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-3.5.2.tgz#5f6226d12a00c25c15279325b57c5fbddd5b1c82"
+  integrity sha512-eh9l7WeL7Lxq17ntsafCrNQF6aW8XS6b7PG/s1Y8amAqpDt8GJ8hz125z566N1jsj3PDh9pfd4SjNS+tLaV47A==
+  dependencies:
+    "@react-native-community/push-notification-ios" "^1.2.0"
 
 react-native-ratings@^6.5.0:
   version "6.5.0"
