@@ -286,7 +286,7 @@ class GestionPagComercio extends Component {
                     marginBottom: winHeight * 0.015,
                     backgroundColor:
                       rowData.revisar === "0" &&
-                      !click.includes(rowData.nombreComercio) && flicker === "GestionPagComercio"
+                      !click.includes(rowData.nombreComercio) //&& flicker === "GestionPagComercio"
                         ? coloro
                         : null
                   }}

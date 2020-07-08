@@ -29,7 +29,7 @@ const goPrincipal = () => {
   Actions.MainAdmin();
   return {
     type: ActionTypes.MAINADMIN,
-    flicker: "MainAdmin"
+    // flicker: "MainAdmin"
   };
 };
 
@@ -37,7 +37,7 @@ const goGestionDenuncias = () => {
   Actions.GestionDenuncias();
   return {
     type: ActionTypes.GESTION_DENUNCIAS,
-    flicker: "GestionDenuncias"
+    // flicker: "GestionDenuncias"
   };
 };
 
@@ -45,7 +45,7 @@ const goGestionPagComercio = () => {
   Actions.GestionPagComercio();
   return {
     type: ActionTypes.GESTION_PAG_COMERCIO,
-    flicker: "GestionPagComercio"
+    // flicker: "GestionPagComercio"
   };
 };
 
@@ -53,7 +53,7 @@ const goGestionCatalogoProductos = () => {
   Actions.GestionCatalogoProductos();
   return {
     type: ActionTypes.GESTION_CATALOGO_PRODUCTOS,
-    flicker: "GestionCatalogoProductos"
+    // flicker: "GestionCatalogoProductos"
   };
 };
 
@@ -61,7 +61,7 @@ const goCatalogoProductosAdmin = () => {
   Actions.CatalogoProductosAdmin();
   return {
     type: ActionTypes.CATALOGO_PRODUCTOS_ADMIN,
-    flicker: "CatalogoProductosAdmin"
+    // flicker: "CatalogoProductosAdmin"
   };
 };
 
@@ -69,7 +69,7 @@ const volverInicio = () => {
   Actions.MainAdmin();
   return {
     type: ActionTypes.MAINADMIN,
-    flicker: "MainAdmin"
+    // flicker: "MainAdmin"
   };
 };
 
@@ -125,7 +125,7 @@ const goGestionComercios = (clicsPantallaActual) => {
 
   return {
     type: ActionTypes.GESTION_COMERCIOS,
-    flicker: "GestionComercios"
+    // flicker: "GestionComercios"
   };
 };
 
@@ -133,7 +133,7 @@ const goGestionComercios2 = () => {
   Actions.GestionComercios();
   return {
     type: ActionTypes.GESTION_COMERCIOS,
-    flicker: "GestionComercios"
+    // flicker: "GestionComercios"
   };
 };
 
@@ -188,7 +188,7 @@ const goGestionComercios3 = (clicsPantallaActual) => {
     });
   return {
     type: ActionTypes.GESTION_COMERCIOS,
-    flicker: "GestionComercios"
+    // flicker: "GestionComercios"
   };
 };
 

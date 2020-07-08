@@ -288,7 +288,7 @@ class GestionFeedbacks extends Component {
                     marginBottom: winHeight * 0.015,
                     backgroundColor:
                       rowData.revisar === "0" &&
-                      !click.includes(rowData.idFeedback+"feedback") && flicker === "GestionFeedbacks"
+                      !click.includes(rowData.idFeedback+"feedback") //&& flicker === "GestionFeedbacks"
                         ? coloro
                         : null
                   }}
@@ -620,7 +620,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   imgRevisado: {
-    //flex: 1,
+    flex: 1,
     //height: winHeight,
     resizeMode: "cover",
     borderColor: "#8E8E8E",

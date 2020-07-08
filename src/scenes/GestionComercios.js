@@ -287,7 +287,7 @@ class GestionComercios extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayDenuncias === "si" && flicker === "GestionComercios"
+                      this.state.hayDenuncias === "si" //&& flicker === "GestionComercios"
                       ? color
                       : "#79B700",
                     marginLeft: "2%",
@@ -321,7 +321,7 @@ class GestionComercios extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayHomeComercios === "si" && flicker === "GestionComercios"
+                      this.state.hayHomeComercios === "si" //&& flicker === "GestionComercios"
                       ? color
                       : "#79B700",
                     marginLeft: "2%",
@@ -356,7 +356,7 @@ class GestionComercios extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayCatalogos === "si" && flicker === "GestionComercios"
+                      this.state.hayCatalogos === "si" //&& flicker === "GestionComercios"
                       ? color 
                       : "#79B700",
                     marginLeft: "2%",

@@ -3,12 +3,6 @@ import { Actions } from "react-native-router-flux";
 import { Alert } from "react-native";
 import RNFetchBlob from "rn-fetch-blob";
 
-/*const isLogged = (bool) => {
-    return {
-        type: ActionTypes.IS_LOGGED,
-        isLogged: bool
-    }
-};  */
 
 const registerHasError = bool => {
   return {
@@ -251,20 +245,21 @@ const register2 = (username, email, password, password2, imageSource, data) => {
   })
     .then(res => res.json())
     .then(responseJson => {
-      // Se cancela el estado de envío
 
-      if (responseJson == "registrado") {
-        Alert.alert("Aviso", "Usuario registrado correctamente.");
-
-        // AsyncStorage.setItem('token', 'asdasdasd124'); // ejemplo
-        Actions.Login();
-      } else {
+      if (responseJson == "registrado")
+      {
+         Alert.alert("Aviso", "Usuario registrado correctamente.");
+         Actions.Login();                  
+      }
+      else
+      {
         Alert.alert("Aviso", responseJson);
-        dispatch(registerHasError(true));
+
       }
     })
     .catch(e => {
       // console.warn(e);
+      dispatch(registerHasError(true));
     });
 };
 

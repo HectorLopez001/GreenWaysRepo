@@ -287,7 +287,7 @@ class GestionDenuncias extends Component {
                     marginBottom: winHeight * 0.015,
                     backgroundColor:
                       rowData.revisar === "0" &&
-                      !click.includes(rowData.idDenuncia+"denuncia") && flicker === "GestionDenuncias"
+                      !click.includes(rowData.idDenuncia+"denuncia") //&& flicker === "GestionDenuncias"
                         ? coloro
                         : null
                   }}

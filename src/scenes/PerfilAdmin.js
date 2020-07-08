@@ -234,7 +234,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     goPrincipal: () => dispatch(PerfilAdminActions.goPrincipal()),
-    logout: () => dispatch(LoginActions.logout()),
+    logout: () => dispatch(LoginActions.logoutAdmin()),
   };
 };
 

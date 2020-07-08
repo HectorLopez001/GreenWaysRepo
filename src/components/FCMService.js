@@ -56,6 +56,8 @@ class FCMService {
         })
     }
 
+
+    //NO USADO
     deleteToken = () => {
         console.log("[FCMService] deleteToken ");
         //alert("[FCMService] deleteToken ");
@@ -113,6 +115,8 @@ class FCMService {
             }
         });
 
+
+        //NO USADO
         //Triggered when have new token
         messaging().onTokenRefresh(fcmToken => {
             console.log("[FCMService] New token refresh: ", fcmToken);
@@ -121,6 +125,7 @@ class FCMService {
         });
     }
 
+        //NO USADO
         unRegister = () => {
             this.messageListener();
         }

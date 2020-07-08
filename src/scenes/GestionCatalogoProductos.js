@@ -311,7 +311,7 @@ class GestionCatalogoProductos extends Component {
                         marginBottom: 5,
                         backgroundColor:
                           rowData.revisarCatalogo == "0" &&
-                          !click.includes(rowData.nombreComercio) && flicker === "GestionCatalogoProductos"
+                          !click.includes(rowData.nombreComercio) //&& flicker === "GestionCatalogoProductos"
                             ? // click != rowData.nombreProducto
                               coloro
                             : null

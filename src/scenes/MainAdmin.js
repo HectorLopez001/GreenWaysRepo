@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  Animated
+  Animated,
+  Alert
 } from "react-native";
 
 import LoginActions from "./../actions/Login";
@@ -108,8 +109,8 @@ class MainAdmin extends Component {
           this.parteDatosComercios();
 
           this.props.flick();
-        }  
-        
+        } 
+            
       })
       .catch(error => {
         console.error(error);
@@ -229,7 +230,7 @@ class MainAdmin extends Component {
                   borderColor: "black",
                   borderRadius: 20,
                   backgroundColor:
-                    this.state.hayDenunciasOHomeComerciosOCatalogos == "si" && flicker === "MainAdmin"
+                    this.state.hayDenunciasOHomeComerciosOCatalogos == "si" //&& flicker === "MainAdmin"
                       ? color
                       : "#79B700",
                   marginLeft: "2%",
@@ -259,7 +260,7 @@ class MainAdmin extends Component {
                   borderColor: "black",
                   borderRadius: 20,
                   backgroundColor:
-                    this.state.hayFeedbacksOUsuariosCompradores == "si" && flicker === "MainAdmin"
+                    this.state.hayFeedbacksOUsuariosCompradores == "si" //&& flicker === "MainAdmin"
                       ? color
                       : "#79B700",
                   marginLeft: "2%",

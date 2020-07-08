@@ -5,7 +5,7 @@ const goPrincipal = () => {
   Actions.MainAdmin();
   return {
     type: ActionTypes.MAINADMIN,
-    flicker: "MainAdmin"
+    // flicker: "MainAdmin"
   };
 };
 

@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import LoginActions from "./../actions/Login";
 import Loader from "./../components/Loader";
+import { Actions } from "react-native-router-flux";
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
@@ -30,6 +31,23 @@ class Login extends Component {
       username: null,
       pass: null
     };
+  }
+
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+
+    if (Actions.currentScene === "Login")
+    {
+      return true;
+    }
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   doLogin() {

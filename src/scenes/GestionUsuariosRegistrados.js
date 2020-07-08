@@ -219,7 +219,7 @@ class GestionUsuariosRegistrados extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayUsuariosCompradores === "si" && flicker === "GestionUsuariosRegistrados"
+                      this.state.hayUsuariosCompradores === "si" //&& flicker === "GestionUsuariosRegistrados"
                         ? color
                         : "#79B700",
                     marginLeft: "2%",
@@ -255,7 +255,7 @@ class GestionUsuariosRegistrados extends Component {
                     borderColor: "black",
                     borderRadius: 20,
                     backgroundColor:
-                      this.state.hayFeedbacks === "si" && flicker === "GestionUsuariosRegistrados"
+                      this.state.hayFeedbacks === "si" //&& flicker === "GestionUsuariosRegistrados"
                       ? color 
                       : "#79B700",
                     marginLeft: "2%",

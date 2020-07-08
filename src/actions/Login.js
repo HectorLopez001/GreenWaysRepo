@@ -117,14 +117,44 @@ const login = (username, password) => {
             Actions.MainVendedor();
           } else {
             if (responseJson == "ok admin") {
-              dispatch(loginHasError(false));
-              //  dispatch(isLogged(true));
-              AsyncStorage.setItem("token", "admin");
-              AsyncStorage.setItem("name", username);
-              Actions.MainAdmin();
+
+              AsyncStorage.getItem("tokenDispositivo").then(token => {
+
+              fetch("https://thegreenways.es/guardarTokenDispositivo.php", {
+                method: "POST",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name: username, token: token})
+              })
+                .then(res => res.json())
+                .then(responseJson => {
+
+                //  alert(responseJson);
+
+                  if (responseJson == "tokenGuardado"){
+
+                    dispatch(loginHasError(false));
+                    //  dispatch(isLogged(true));
+                    AsyncStorage.setItem("token", "admin");
+                    AsyncStorage.setItem("name", username);
+
+                    Alert.alert("Aviso", "Antes de borrar esta app, cierre la sesión de administrador.")
+                    
+                    Actions.MainAdmin();
+
+                  } else {
+                    Alert.alert(
+                      "Aviso",
+                      "Error guardando el token del dispositivo "
+                    );
+                  }
+                })
+              });
             } else {
               Alert.alert(
-                "Aviso ",
+                "Aviso",
                 "El nombre de usuario y/o la contraseña no existen. "
               );
             }
@@ -144,13 +174,61 @@ const logout = () => {
   AsyncStorage.removeItem("name");
   AsyncStorage.removeItem("comercio");
 
-  // Actions.Login();
   Actions.Login();
-  // Actions.pop();
+
   return {
     type: ActionTypes.LOGOUT
   };
 };
+
+const logoutAdmin = () => {
+
+  return dispatch => {
+
+    AsyncStorage.getItem("name").then(username => {
+      AsyncStorage.getItem("tokenDispositivo").then(token => {
+
+      fetch("https://thegreenways.es/borrarTokenDispositivo.php", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name: username, token: token})
+      })
+        .then(res => res.json())
+        .then(responseJson => {
+
+          //alert(responseJson);
+
+          if (responseJson == "tokenBorrado"){
+            dispatch(loginHasError(false));
+
+            AsyncStorage.removeItem("token");
+            AsyncStorage.removeItem("name");
+            AsyncStorage.removeItem("comercio");
+          //   AsyncStorage.removeItem("tokenDispositivo");
+            Actions.Login();
+          //  Actions.reset();
+
+
+          } else {
+            Alert.alert(
+              "Aviso",
+              "Error guardando el token del dispositivo "
+            );
+          }
+        })
+        .catch(e => {
+          //     console.warn(e);
+          dispatch(loginHasError(true));
+        });
+        
+      })
+    });
+  }
+};
+
 
 const goRegister = () => {
   Actions.Register();
@@ -181,5 +259,6 @@ export default {
   login,
   logout,
   campoError,
-  noErrores
+  noErrores,
+  logoutAdmin
 };

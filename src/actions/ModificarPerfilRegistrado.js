@@ -4,12 +4,6 @@ import RNFetchBlob from "rn-fetch-blob";
 import { Alert } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 
-/*const goPrincipal = () => {
-  Actions.Main();
-  return {
-    type: ActionTypes.MAIN
-  };
-};*/
 
 const modificarPerfilRegistradoHasError = bool => {
   return {
@@ -38,27 +32,35 @@ const noErrores = () => {
   };
 };
 
-const uploadPhoto = (datas, nameCreated) => {
-  RNFetchBlob.fetch(
-    "POST",
-    "https://thegreenways.es/upload.php",
-    {
-      Authorization: "Bearer access-token",
-      otherHeader: "foo",
-      "Content-Type": "multipart/form-data"
-    },
-    [{ name: "image", filename: "image.jpeg", type: nameCreated, data: datas }]
-  )
-    // .then(resp => {
+// const uploadPhoto = (datas, nameCreated) => {
 
-    .then(res => res.json())
-    .then(responseJson => {
-      // alert(responseJson);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-};
+//   RNFetchBlob.fetch(
+//     "POST",
+//     "https://thegreenways.es/upload.php",
+//     {
+//       Authorization: "Bearer access-token",
+//       otherHeader: "foo",
+//       "Content-Type": "multipart/form-data"
+//     },
+//     [{ name: "image", filename: "image.jpeg", type: nameCreated, data: datas }]
+//   )
+//     .then(res => res.json())
+//     .then(responseJson => {
+//        //alert(responseJson);
+//       if(responseJson === "introducidaImagen")
+//       {
+//        // alert (responseJson);
+
+//         return true;
+//       }
+
+
+//     })
+//     .catch(err => {
+//       console.log(err);
+//     });
+
+// };
 
 const modificarPerfilRegistrado = (
   nombreLogeo,
@@ -147,7 +149,7 @@ const modificarPerfilRegistrado = (
           .then(res => res.json())
           .then(responseJson => {
             // Se cancela el estado de envío
-            dispatch(modificarPerfilRegistradoIsLoading(false));
+           // dispatch(modificarPerfilRegistradoIsLoading(false));
             // console.log(res);
             if (responseJson == "ok") {
               fetch("https://thegreenways.es/comprobarNombreUsuarioLibre.php", {
@@ -165,6 +167,7 @@ const modificarPerfilRegistrado = (
                 .then(res => res.json())
                 .then(responseJson => {
                   // Se cancela el estado de envío
+                  dispatch(modificarPerfilRegistradoIsLoading(false));
 
                   if (responseJson == "libre") {
                     modificarPerfil3(
@@ -217,7 +220,7 @@ const modificarPerfilRegistrado = (
           });
       }
     } else {
-      dispatch(modificarPerfilRegistradoIsLoading(false));
+      //dispatch(modificarPerfilRegistradoIsLoading(false));
       fetch("https://thegreenways.es/comprobarNombreUsuarioLibre.php", {
         method: "POST",
         headers: {
@@ -233,6 +236,8 @@ const modificarPerfilRegistrado = (
         .then(res => res.json())
         .then(responseJson => {
           // Se cancela el estado de envío
+
+          dispatch(modificarPerfilRegistradoIsLoading(false));
 
           if (responseJson == "libre") {
             modificarPerfil3(
@@ -272,56 +277,56 @@ const modificarPerfilRegistrado = (
   };
 };
 
-const modificarPerfil2 = (
-  nombreLogeo,
-  idUsuario,
-  username,
-  password,
-  email,
-  imageSource,
-  data
-) => {
-  fetch("https://thegreenways.es/comprobarNombreUsuarioLibre.php", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      idUsuario: idUsuario,
-      username: username,
-      email: email
-    })
-  })
-    .then(res => res.json())
-    .then(responseJson => {
-      // Se cancela el estado de envío
+// const modificarPerfil2 = (
+//   nombreLogeo,
+//   idUsuario,
+//   username,
+//   password,
+//   email,
+//   imageSource,
+//   data
+// ) => {
+//   fetch("https://thegreenways.es/comprobarNombreUsuarioLibre.php", {
+//     method: "POST",
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify({
+//       idUsuario: idUsuario,
+//       username: username,
+//       email: email
+//     })
+//   })
+//     .then(res => res.json())
+//     .then(responseJson => {
+//       // Se cancela el estado de envío
 
-      if (responseJson == "libre") {
-        modificarPerfil3(
-          nombreLogeo,
-          idUsuario,
-          username,
-          password,
-          email,
-          imageSource,
-          data
-        );
-      } else {
-        Alert.alert("Aviso", responseJson);
-        dispatch(modificarPerfilRegistradoHasError(true));
+//       if (responseJson == "libre") {
+//         modificarPerfil3(
+//           nombreLogeo,
+//           idUsuario,
+//           username,
+//           password,
+//           email,
+//           imageSource,
+//           data
+//         );
+//       } else {
+//         Alert.alert("Aviso", responseJson);
+//         dispatch(modificarPerfilRegistradoHasError(true));
 
-        return;
-      }
-    })
-    .catch(e => {
-      // console.warn(e);
+//         return;
+//       }
+//     })
+//     .catch(e => {
+//       // console.warn(e);
 
-      dispatch(modificarPerfilRegistradoHasError(true));
-    });
-};
+//       dispatch(modificarPerfilRegistradoHasError(true));
+//     });
+// };
 
-const modificarPerfil3 = (
+ const modificarPerfil3 = (
   nombreLogeo,
   idUsuario,
   username,
@@ -352,62 +357,108 @@ const modificarPerfil3 = (
 
     var nameCreated = random + "_" + datetime;
 
-    //SUBIMOS LA IMAGEN AL SERVIDOR
-    var exito = uploadPhoto(data, nameCreated);
+    RNFetchBlob.fetch(
+      "POST",
+      "https://thegreenways.es/upload.php",
+      {
+        Authorization: "Bearer access-token",
+        otherHeader: "foo",
+        "Content-Type": "multipart/form-data"
+      },
+      [{ name: "image", filename: "image.jpeg", type: nameCreated, data: data }]
+    )
+      .then(res => res.json())
+      .then(responseJson => {
 
-    // alert(exito);
+        if(responseJson === "introducidaImagen")
+        {
+          nameCreated = "upload/images/" + nameCreated + ".jpeg";
 
-    if (exito == false) {
-      Alert.alert(
-        "Aviso",
-        "Error en la conexion a internet, por favor intentalo otra vez"
-      );
+          fetch("https://thegreenways.es/modificarPerfilRegistrado.php", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              nombreLogeo: nombreLogeo,
+              idUsuario: idUsuario,
+              username: username,
+              email: email,
+              tieneFeedback: tieneFeedback,
+              nameCreated: nameCreated
+            })
+          })
+            .then(res => res.json())
+            .then(responseJson => {
+              
+              // Se cancela el estado de envío        
+              if (responseJson === "modificado") {
 
-      dispatch(modificarPerfilRegistradoHasError(true));
-      // Se cancela el estado de envío
-      return;
-    }
+                Alert.alert("Aviso", "Usuario modificado correctamente.");
+                AsyncStorage.setItem("name", username);    
+                Actions.PerfilRegistrado();
+        
+              } else {
+                Alert.alert("Aviso", responseJson);
+              }
+            })
+            .catch(e => {
+              // console.warn(e);
+              dispatch(modificarPerfilRegistradoHasError(true));
+            });
+        }
+        else{
+          Alert.alert(
+            "Aviso",
+            "Error en la conexion a internet, por favor intentalo otra vez"
+          );    
+        }   
+      })
+      .catch(err => {
+        //console.log(err);
+        dispatch(modificarPerfilRegistradoHasError(true));
+      });
 
-    nameCreated = "upload/images/" + nameCreated + ".jpeg";
   } else {
     //SI NO INTRODUCIMOS UNA NUEVA FOTO
     nameCreated = imageSource.uri.substring(24, imageSource.uri.length);
+
+    fetch("https://thegreenways.es/modificarPerfilRegistrado.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombreLogeo: nombreLogeo,
+        idUsuario: idUsuario,
+        username: username,
+        email: email,
+        tieneFeedback: tieneFeedback,
+        nameCreated: nameCreated
+      })
+    })
+      .then(res => res.json())
+      .then(responseJson => {
+
+        //dispatch(modificarPerfilRegistradoIsLoading(false));
+        // Se cancela el estado de envío  
+        if (responseJson === "modificado") {
+  
+          Alert.alert("Aviso", "Usuario modificado correctamente.");
+          AsyncStorage.setItem("name", username);
+          Actions.PerfilRegistrado();
+  
+        } else {
+          Alert.alert("Aviso", responseJson);
+        }
+      })
+      .catch(e => {
+        // console.warn(e);
+        dispatch(modificarPerfilRegistradoHasError(true));
+      });
   }
-
-  // Variable que importa funciones de la libreria de encriptación md5
-
-  fetch("https://thegreenways.es/modificarPerfilRegistrado.php", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      nombreLogeo: nombreLogeo,
-      idUsuario: idUsuario,
-      username: username,
-      email: email,
-      tieneFeedback: tieneFeedback,
-      nameCreated: nameCreated
-    })
-  })
-    .then(res => res.json())
-    .then(responseJson => {
-      // Se cancela el estado de envío
-
-      if (responseJson == "modificado") {
-        Alert.alert("Aviso", "Usuario modificado correctamente.");
-        AsyncStorage.setItem("name", username);
-        Actions.PerfilRegistrado();
-      } else {
-        Alert.alert("Aviso", responseJson);
-      }
-    })
-    .catch(e => {
-      // console.warn(e);
-
-      dispatch(modificarPerfilRegistradoHasError(true));
-    });
 };
 
 function getRandomInt(min, max) {

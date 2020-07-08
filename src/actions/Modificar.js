@@ -30,27 +30,27 @@ const noErrores = () => {
   };
 };
 
-const uploadPhoto = (datas, nameCreated) => {
-  RNFetchBlob.fetch(
-    "POST",
-    "https://thegreenways.es/upload.php",
-    {
-      Authorization: "Bearer access-token",
-      otherHeader: "foo",
-      "Content-Type": "multipart/form-data"
-    },
-    [{ name: "image", filename: "image.jpeg", type: nameCreated, data: datas }]
-  )
-    // .then(resp => {
+// const uploadPhoto = (datas, nameCreated) => {
+//   RNFetchBlob.fetch(
+//     "POST",
+//     "https://thegreenways.es/upload.php",
+//     {
+//       Authorization: "Bearer access-token",
+//       otherHeader: "foo",
+//       "Content-Type": "multipart/form-data"
+//     },
+//     [{ name: "image", filename: "image.jpeg", type: nameCreated, data: datas }]
+//   )
+//     // .then(resp => {
 
-    .then(res => res.json())
-    .then(responseJson => {
-      // alert(responseJson);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-};
+//     .then(res => res.json())
+//     .then(responseJson => {
+//       // alert(responseJson);
+//     })
+//     .catch(err => {
+//       console.log(err);
+//     });
+// };
 
 const modificar = (
   idProducto,
@@ -237,101 +237,195 @@ const modificar2 = (
     var nameCreated = random + "_" + datetime;
 
     //SUBIMOS LA IMAGEN AL SERVIDOR
-    var exito = uploadPhoto(data, nameCreated);
+    //var exito = uploadPhoto(data, nameCreated);
 
     // alert(exito);
 
-    if (exito == false) {
-      Alert.alert(
-        "Aviso",
-        "Error en la conexion a internet, por favor intentalo otra vez"
-      );
 
-      dispatch(modificarHasError(true));
-      // Se cancela el estado de envío
-      return;
-    }
+      RNFetchBlob.fetch(
+        "POST",
+        "https://thegreenways.es/upload.php",
+        {
+          Authorization: "Bearer access-token",
+          otherHeader: "foo",
+          "Content-Type": "multipart/form-data"
+        },
+        [{ name: "image", filename: "image.jpeg", type: nameCreated, data: data }]
+      )
+        .then(res => res.json())
+        .then(responseJson => {
 
-    nameCreated = "upload/images/" + nameCreated + ".jpeg";
-    //  alert(nameCreated);
+
+          if(responseJson === "introducidaImagen")
+          {
+            nameCreated = "upload/images/" + nameCreated + ".jpeg";
+
+            if (value == 0) {
+              precio = precio + " €/Unidad";
+            } else {
+              precio = precio + " €/Kilo";
+            }
+          
+            //Campo descripcion vacio.
+            if (descripcion == null) {
+              descripcion = "No hay descripción disponible para esta tienda.";
+            }
+  
+            fetch("https://thegreenways.es/modificar.php", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                idProducto: idProducto,
+                nombre: nombre,
+                descripcion: descripcion,
+                categoria: categoria,
+                precio: precio,
+                username: username,
+                nameCreated: nameCreated,
+                idComercio: idComercio
+              })
+            })
+              .then(res => res.json())
+              .then(responseJson => {
+          
+                if (responseJson == "modificado") {
+
+                  Alert.alert("Aviso", "Producto modificado correctamente.");
+
+                  AsyncStorage.setItem(
+                    "filaInicioCatalogoVendedorFinal",
+                    filaInicio.toString()
+                  ); 
+          
+                  AsyncStorage.setItem(
+                    "categoriaVendedorSeleccionadaFinal",
+                    categoriaVendedorSeleccionada
+                  );
+                  //  Actions.refresh({ key: Math.random() });
+          
+                  //Esto es por si modifica el nombre del producto desde la pagina del producto (recarga sino no encuentra el nombre)
+                  AsyncStorage.setItem("producto", nombre);
+          
+                  Keyboard.dismiss();
+          
+                  AsyncStorage.getItem("catalogo").then(value => {
+                    AsyncStorage.getItem("visitado").then(value2 => {
+                      if (value == "detalle" && value2 != "pagProducto") {
+                        goCatalogoDetalle();
+                      } else {
+                        if (value == "rapido" && value2 != "pagProducto") {
+                          goCatalogo();
+                        } else {
+                          goPagProductoVendedor();
+                        }
+                      }
+                    });
+                  });
+                } else {
+                  Alert.alert("Aviso", responseJson);
+                }
+              })
+              .catch(e => {
+                // console.warn(e);
+                dispatch(modificarHasError(true));
+              });
+          }
+          else{
+            Alert.alert(
+              "Aviso",
+              "Error en la conexion a internet, por favor intentalo otra vez"
+            );    
+          }  
+        })
+        .catch(err => {
+          // console.warn(e);
+          dispatch(modificarHasError(true));
+        });
+
   } else {
     //SI NO INTRODUCIMOS UNA NUEVA FOTO
     nameCreated = imageSource.uri.substring(24, imageSource.uri.length);
-  }
 
-  // alert(categoria + categoria.name);
-
-  if (value == 0) {
-    precio = precio + " €/Unidad";
-  } else {
-    precio = precio + " €/Kilo";
-  }
-
-  //Campo descripcion vacio.
-  if (descripcion == null) {
-    descripcion = "No hay descripción disponible para esta tienda.";
-  }
-
-  fetch("https://thegreenways.es/modificar.php", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      idProducto: idProducto,
-      nombre: nombre,
-      descripcion: descripcion,
-      categoria: categoria,
-      precio: precio,
-      username: username,
-      nameCreated: nameCreated,
-      idComercio: idComercio
+    if (value == 0) {
+      precio = precio + " €/Unidad";
+    } else {
+      precio = precio + " €/Kilo";
+    }
+  
+    //Campo descripcion vacio.
+    if (descripcion == null) {
+      descripcion = "No hay descripción disponible para esta tienda.";
+    }
+  
+    fetch("https://thegreenways.es/modificar.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        idProducto: idProducto,
+        nombre: nombre,
+        descripcion: descripcion,
+        categoria: categoria,
+        precio: precio,
+        username: username,
+        nameCreated: nameCreated,
+        idComercio: idComercio
+      })
     })
-  })
-    .then(res => res.json())
-    .then(responseJson => {
-      // Se cancela el estado de envío
+      .then(res => res.json())
+      .then(responseJson => {
+        // Se cancela el estado de envío
+  
+        if (responseJson == "modificado") {
 
-      if (responseJson == "modificado") {
-        AsyncStorage.setItem(
-          "filaInicioCatalogoVendedorFinal",
-          filaInicio.toString()
-        ); // ejemplo
+          Alert.alert("Aviso", "Producto modificado correctamente.");
 
-        AsyncStorage.setItem(
-          "categoriaVendedorSeleccionadaFinal",
-          categoriaVendedorSeleccionada
-        );
-        //  Actions.refresh({ key: Math.random() });
-
-        //Esto es por si modifica el nombre del producto desde la pagina del producto (recarga sino no encuentra el nombre)
-        AsyncStorage.setItem("producto", nombre);
-
-        Keyboard.dismiss();
-
-        AsyncStorage.getItem("catalogo").then(value => {
-          AsyncStorage.getItem("visitado").then(value2 => {
-            if (value == "detalle" && value2 != "pagProducto") {
-              goCatalogoDetalle();
-            } else {
-              if (value == "rapido" && value2 != "pagProducto") {
-                goCatalogo();
+          AsyncStorage.setItem(
+            "filaInicioCatalogoVendedorFinal",
+            filaInicio.toString()
+          ); // ejemplo
+  
+          AsyncStorage.setItem(
+            "categoriaVendedorSeleccionadaFinal",
+            categoriaVendedorSeleccionada
+          );
+          //  Actions.refresh({ key: Math.random() });
+  
+          //Esto es por si modifica el nombre del producto desde la pagina del producto (recarga sino no encuentra el nombre)
+          AsyncStorage.setItem("producto", nombre);
+  
+          Keyboard.dismiss();
+  
+          AsyncStorage.getItem("catalogo").then(value => {
+            AsyncStorage.getItem("visitado").then(value2 => {
+              if (value == "detalle" && value2 != "pagProducto") {
+                goCatalogoDetalle();
               } else {
-                goPagProductoVendedor();
+                if (value == "rapido" && value2 != "pagProducto") {
+                  goCatalogo();
+                } else {
+                  goPagProductoVendedor();
+                }
               }
-            }
+            });
           });
-        });
-      } else {
-        // dispatch(modificarHasError(true));
-        Alert.alert("Aviso", responseJson);
-      }
-    })
-    .catch(e => {
-      // console.warn(e);
-      dispatch(modificarHasError(true));
-    });
+        } else {
+          // dispatch(modificarHasError(true));
+          Alert.alert("Aviso", responseJson);
+        }
+      })
+      .catch(e => {
+        // console.warn(e);
+        dispatch(modificarHasError(true));
+      });
+  }
+
+
 };
 
 function getRandomInt(min, max) {

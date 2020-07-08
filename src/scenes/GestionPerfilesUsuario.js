@@ -286,7 +286,7 @@ class GestionPerfilesUsuario extends Component {
                     marginBottom: winHeight * 0.015,
                     backgroundColor:
                       rowData.revisar === "0" &&
-                      !click.includes(rowData.name) && flicker === "GestionPerfilesUsuario" // click != rowData.nombreComercio
+                      !click.includes(rowData.name) //&& flicker === "GestionPerfilesUsuario" // click != rowData.nombreComercio
                         ? coloro
                         : null
                   }}

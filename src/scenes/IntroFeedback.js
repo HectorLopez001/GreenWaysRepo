@@ -613,7 +613,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-
     height: winHeight * 0.06
     //marginTop: winHeight * 0.1
   },

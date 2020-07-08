@@ -319,7 +319,7 @@ class CatalogoProductosAdmin extends Component {
                     // height: winHeight * 0.25,
                     backgroundColor:
                       rowData.revisar == "0" &&
-                      !click.includes(rowData.nombreProducto+rowData.idProducto) && flicker === "CatalogoProductosAdmin"
+                      !click.includes(rowData.nombreProducto+rowData.idProducto) //&& flicker === "CatalogoProductosAdmin"
                        // click != rowData.nombreProducto
                         ? coloro
                         : null

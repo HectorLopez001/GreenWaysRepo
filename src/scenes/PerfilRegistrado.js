@@ -89,6 +89,7 @@ class PerfilRegistrado extends Component {
           },
           function() {
             //State change
+          //  alert(this.state.imageSource);
           }
         );
       })

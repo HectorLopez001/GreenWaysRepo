@@ -3,12 +3,6 @@ import { Actions } from "react-native-router-flux";
 import { Alert } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 
-/*const goPrincipal = () => {
-  Actions.Main();
-  return {
-    type: ActionTypes.MAIN
-  };
-};*/
 
 const modificarPerfilVendedorHasError = bool => {
   return {
@@ -224,46 +218,46 @@ const modificarPerfilVendedor = (
   };
 };
 
-const modificarPerfil2 = (
-  nombreLogeo,
-  idUsuario,
-  username,
-  password,
-  email
-) => {
-  fetch("https://thegreenways.es/comprobarNombreUsuarioLibre.php", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      idUsuario: idUsuario,
-      username: username,
-      email: email
-    })
-  })
-    .then(res => res.json())
-    .then(responseJson => {
-      // Se cancela el estado de envío
+// const modificarPerfil2 = (
+//   nombreLogeo,
+//   idUsuario,
+//   username,
+//   password,
+//   email
+// ) => {
+//   fetch("https://thegreenways.es/comprobarNombreUsuarioLibre.php", {
+//     method: "POST",
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify({
+//       idUsuario: idUsuario,
+//       username: username,
+//       email: email
+//     })
+//   })
+//     .then(res => res.json())
+//     .then(responseJson => {
+//       // Se cancela el estado de envío
 
-      if (responseJson == "libre") {
-        modificarPerfil3(nombreLogeo, idUsuario, username, password, email);
-      } else {
-        Alert.alert("Aviso", responseJson);
-        dispatch(modificarPerfilVendedorHasError(true));
+//       if (responseJson == "libre") {
+//         modificarPerfil3(nombreLogeo, idUsuario, username, password, email);
+//       } else {
+//         Alert.alert("Aviso", responseJson);
+//         dispatch(modificarPerfilVendedorHasError(true));
 
-        return;
-      }
-    })
-    .catch(e => {
-      // console.warn(e);
+//         return;
+//       }
+//     })
+//     .catch(e => {
+//       // console.warn(e);
 
-      dispatch(modificarPerfilVendedorHasError(true));
-    });
+//       dispatch(modificarPerfilVendedorHasError(true));
+//     });
 
-  // Variable que importa funciones de la libreria de encriptación md5
-};
+//   // Variable que importa funciones de la libreria de encriptación md5
+// };
 
 const modificarPerfil3 = (
   nombreLogeo,

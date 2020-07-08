@@ -6,6 +6,7 @@ import Root from './containers'
 import { fcmService } from './components/FCMService';
 import { localNotificationService } from './components/LocalNotificationService';
 import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const store = cfgStore();
 
@@ -56,13 +57,15 @@ export default function App() {
 
     }, [])
 
-            // messaging()
-            //   .getToken()
-            //   .then(token => {
-            //    // return saveTokenToDatabase(token);
-            //    // console.log("token puto:" + token);
-            //    alert("token puto:" + token);
-            //   });
+            messaging()
+              .getToken()
+              .then(token => {
+               // return saveTokenToDatabase(token);
+               // console.log("token puto:" + token);
+               // alert("token puto:" + token);
+
+               AsyncStorage.setItem("tokenDispositivo", token);
+              });
 
         return (
             <Provider store={store}>

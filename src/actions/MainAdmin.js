@@ -12,7 +12,7 @@ const goGestionUsuariosRegistrados = () => {
   Actions.GestionUsuariosRegistrados();
   return {
     type: ActionTypes.GESTION_USUARIOS_REGISTRADOS,
-    flicker: "GestionUsuariosRegistrados"
+    // flicker: "GestionUsuariosRegistrados"
   };
 };
 
@@ -20,7 +20,7 @@ const goGestionComercios = () => {
   Actions.GestionComercios();
   return {
     type: ActionTypes.GESTION_COMERCIOS,
-    flicker: "GestionComercios"
+    // flicker: "GestionComercios"
   };
 };
 
@@ -34,7 +34,7 @@ const flick = () => {
   Actions.MainAdmin();
   return {
     type: ActionTypes.MAINADMIN,
-    flicker: "MainAdmin"
+    // flicker: "MainAdmin"
   };
 };
 

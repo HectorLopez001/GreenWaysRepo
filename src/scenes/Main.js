@@ -29,7 +29,7 @@ class Main extends Component {
         <TouchableOpacity
           onPress={() => {
             Actions.PerfilRegistrado();
-            return;
+         //   return;
           }}
           style={{ padding: 10 }}
         >

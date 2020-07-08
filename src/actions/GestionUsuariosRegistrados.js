@@ -22,7 +22,7 @@ const goPrincipal = () => {
   Actions.MainAdmin();
   return {
     type: ActionTypes.MAINADMIN,
-    flicker: "MainAdmin"
+    // flicker: "MainAdmin"
   };
 };
 
@@ -30,7 +30,7 @@ const goGestionFeedbacks = () => {
   Actions.GestionFeedbacks();
   return {
     type: ActionTypes.GESTION_FEEDBACKS,
-    flicker: "GestionFeedbacks"
+    // flicker: "GestionFeedbacks"
   };
 };
 
@@ -38,7 +38,7 @@ const goGestionPerfilesUsuario = () => {
   Actions.GestionPerfilesUsuario();
   return {
     type: ActionTypes.GESTION_PERFILES_USUARIO,
-    flicker: "GestionPerfilesUsuario"
+    // flicker: "GestionPerfilesUsuario"
   };
 };
 
@@ -46,7 +46,7 @@ const volverInicio = () => {
   Actions.MainAdmin();
   return {
     type: ActionTypes.MAINADMIN,
-    flicker: "MainAdmin"
+    // flicker: "MainAdmin"
   };
 };
 
@@ -54,7 +54,7 @@ const goGestionUsuariosRegistrados3 = () => {
   Actions.GestionUsuariosRegistrados();
   return {
     type: ActionTypes.GESTION_USUARIOS_REGISTRADOS,
-    flicker: "GestionUsuariosRegistrados"
+    // flicker: "GestionUsuariosRegistrados"
   };
 };
 
@@ -111,7 +111,7 @@ const goGestionUsuariosRegistrados = (clicsPantallaActual) => {
 
   return {
     type: ActionTypes.GESTION_USUARIOS_REGISTRADOS,
-    flicker: "GestionUsuariosRegistrados"
+    //flicker: "GestionUsuariosRegistrados"
   };
 };
 
@@ -165,10 +165,10 @@ const goGestionUsuariosRegistrados2 = (clicsPantallaActual) => {
       console.error(error);
     });
 
-  return {
-    type: ActionTypes.GESTION_USUARIOS_REGISTRADOS,
-    flicker: "GestionUsuariosRegistrados"
-  };
+    return {
+      type: ActionTypes.MAINADMIN,
+      // flicker: "GestionUsuariosRegistrados"
+    };
 };
 
 const perfilUsuarioRevisado = nombreUsuario => {

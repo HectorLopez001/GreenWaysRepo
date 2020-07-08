@@ -85,6 +85,7 @@ class LocalNotificationService{
         }
     }
 
+    //NO USADO
     buildIOSNotification = (id, title, message, data = {}, options = {}) => {
         return{
             alertAction: options.alertAction || 'view',
@@ -96,6 +97,7 @@ class LocalNotificationService{
         }
     }
 
+    //NO USADO
     cancelAllLocalNotifications = () => {
         if(Platform.OS === 'ios') {
             PushNotificationIOS.removeAllDeliveredNotifications();
@@ -105,8 +107,9 @@ class LocalNotificationService{
         }
     }
 
+    //NO USADO
     removeDeliveredNotificationById = (notificationId) => {
-        alert("[LocalNotificationService] removeDeliveredNotificationById: ", notificationId);
+       // alert("[LocalNotificationService] removeDeliveredNotificationById: ", notificationId);
         PushNotification.cancelLocalNotifications({id: `${notification}`});
     }
 }
