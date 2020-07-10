@@ -45,7 +45,11 @@ export default (state = initialState, action) => {
       return Object.assign({}, state,{
           latitud: action.latitud,
           longitud :action.longitud
-    });
+      });
+    case ActionTypes.RENDERIZAR_MAPA:
+      return Object.assign({}, state,{
+          actualizar :action.actualizar
+      });    
 
     default:
       return state;

@@ -38,6 +38,13 @@ const cambioCoordenadas = (latitudNueva, longitudNueva) => {
   };
 };
 
+const reRender = (random) => {
+  return{
+    type: ActionTypes.RENDERIZAR_MAPA,
+    actualizar: random
+  };
+};
+
 const uploadPhoto = (datas, image, nameCreated) => {
   RNFetchBlob.fetch(
     "POST",
@@ -486,5 +493,6 @@ export default {
   registerVendedor,
   goLogin,
   goMapa,
-  cambioCoordenadas
+  cambioCoordenadas,
+  reRender
 };

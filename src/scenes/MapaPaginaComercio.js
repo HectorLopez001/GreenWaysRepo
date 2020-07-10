@@ -135,8 +135,6 @@ class MapaPaginaComercio extends Component {
 
   getCurrentPosition() {
     try {
-      Geolocation.getCurrentPosition(
-        position => {
           const region = {
             latitude: this.state.marker.latlng.latitude,
             longitude: this.state.marker.latlng.longitude,
@@ -149,29 +147,33 @@ class MapaPaginaComercio extends Component {
 
           setTimeout(() => {
             this.refs.marcador.showCallout();
-          }, 100);
-        },
-        error => {
-          //TODO: better design
-          switch (error.code) {
-            case 1:
-              if (Platform.OS === "ios") {
-                Alert.alert(
-                  "",
-                  "Para ubicar tu locación habilita permiso para la aplicación en Ajustes - Privacidad - Localización"
-                );
-              } else {
-                Alert.alert(
-                  "",
-                  "Para ubicar tu locación habilita permiso para la aplicación en Ajustes - Apps - ExampleApp - Localización"
-                );
+
+            Geolocation.getCurrentPosition(
+              position => {
+
+              },
+              error => {
+                //TODO: better design
+                switch (error.code) {
+                  case 1:
+                    if (Platform.OS === "ios") {
+                      Alert.alert(
+                        "",
+                        "Para ubicar tu locación habilita permiso para la aplicación en Ajustes - Privacidad - Localización"
+                      );
+                    } else {
+                      Alert.alert(
+                        "",
+                        "Para ubicar tu locación habilita permiso para la aplicación en Ajustes - Apps - ExampleApp - Localización"
+                      );
+                    }
+                    break;
+                  default:
+                    Alert.alert("", "Error al detectar tu localización, active la localización GPS.");
+                }
               }
-              break;
-            default:
-              Alert.alert("", "Error al detectar tu localización, active la localización GPS.");
-          }
-        }
-      );
+            );
+          }, 100);
     } catch (e) {
       alert(e.message || "");
     }
@@ -196,7 +198,54 @@ class MapaPaginaComercio extends Component {
 
     return (
       <View>
-        <View style={{ height: "90%" }}>
+        <View style={{ flexDirection: "row", height: winHeight * 0.055 }}>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  "Ayuda",
+                  "Aquí puedes ver la localización de este comercio en particular.\n\nPuedes mover, girar e inclinar el mapa además de poder ampliar/alejar el zoom de este como en un mapa típico de Google Maps."
+                );
+              }}
+              style={{
+                paddingTop: 7,
+                paddingBottom: 7,
+                paddingLeft: 10,
+                paddingRight: 10
+              }}
+            >
+              <Image
+                style={{
+                  height: 26,
+                  width: 26,
+                  resizeMode: "cover"
+                }}
+                resizeMethod={"resize"}
+                source={require("GreenWaysProject/images/info8.png")}
+              />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{ justifyContent: "center", alignItems: "flex-start" }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontSize: 18
+              }}
+            >
+              Ayuda
+            </Text>
+          </View>
+        </View>
+        {/* SEPARADOR */}
+        <View
+            style={{
+              borderBottomColor: "black",
+              borderBottomWidth: 1
+            }}
+          />
+        <View style={{ height : winHeight * 0.74 }}>
           <MapView
             showsUserLocation
             ref={map => {

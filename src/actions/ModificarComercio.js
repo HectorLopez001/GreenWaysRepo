@@ -45,6 +45,13 @@ const cambioCoordenadas = (latitudNueva, longitudNueva) => {
   };
 };
 
+const reRender = (random) => {
+  return{
+    type: ActionTypes.RENDERIZAR_MAPA_MODIFICAR_COMERCIO,
+    actualizar: random
+  };
+};
+
 const uploadPhoto = (datas, nameCreated) => {
   RNFetchBlob.fetch(
     "POST",
@@ -338,5 +345,6 @@ export default {
   goPagProductoVendedor,
   goPrincipalVendedor,
   goMapa,
-  cambioCoordenadas
+  cambioCoordenadas,
+  reRender
 };

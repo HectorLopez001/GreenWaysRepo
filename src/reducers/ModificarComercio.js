@@ -8,6 +8,7 @@ const initialState = {
   name: "",
   username: "",
   password: "",
+  actualizar: "",
   latitud: null,
   longitud: null
 };
@@ -37,6 +38,10 @@ export default (state = initialState, action) => {
           latitud: action.latitud,
           longitud :action.longitud
     });
+    case ActionTypes.RENDERIZAR_MAPA_MODIFICAR_COMERCIO:
+      return Object.assign({}, state,{
+          actualizar :action.actualizar
+      });
 
     default:
       return state;

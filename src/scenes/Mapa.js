@@ -194,7 +194,54 @@ class Mapa extends Component {
 
     return (
       <View>
-        <View style={{ height: "90%" }}>
+        <View style={{ flexDirection: "row", height: winHeight * 0.055 }}>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  "Ayuda",
+                  "Aquí puedes ver la localización de todos los comercios registrados en la app.\n\nPulsa sobre un marcador si quieres desplegar el cartel informativo de un comercio en particular. Además de eso, también puedes pulsar sobre el cartel informativo para dirigirte a la página particular de ese comercio.\n\nPuedes mover, girar e inclinar el mapa además de poder ampliar/alejar el zoom de este como en un mapa típico de Google Maps."
+                );
+              }}
+              style={{
+                paddingTop: 7,
+                paddingBottom: 7,
+                paddingLeft: 10,
+                paddingRight: 10
+              }}
+            >
+              <Image
+                style={{
+                  height: 26,
+                  width: 26,
+                  resizeMode: "cover"
+                }}
+                resizeMethod={"resize"}
+                source={require("GreenWaysProject/images/info8.png")}
+              />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{ justifyContent: "center", alignItems: "flex-start" }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontSize: 18
+              }}
+            >
+              Ayuda
+            </Text>
+          </View>
+        </View>
+        {/* SEPARADOR */}
+        <View
+            style={{
+              borderBottomColor: "black",
+              borderBottomWidth: 1
+            }}
+          />
+        <View style={{ height: winHeight * 0.74 }}>
           <MapView
             showsUserLocation
             ref={map => {
