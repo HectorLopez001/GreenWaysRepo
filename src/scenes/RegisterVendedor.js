@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import MapView from "react-native-maps";
+import { Marker } from "react-native-maps";
 import { connect } from "react-redux";
 import {
   View,
@@ -49,6 +51,45 @@ class RegisterVendedor extends Component {
       path: null
     };
   }
+
+  componentDidMount() {
+
+     this.props.cambiarLocalizacion(null, null);
+   }
+
+  componentDidUpdate() {
+
+    let region = {
+      latitude: this.props.latitud,
+      longitude: this.props.longitud,
+      latitudeDelta: 0.003,
+      longitudeDelta: 0.003
+    };
+
+    this.props.cambiarLocalizacion(this.props.latitud, this.props.longitud);
+
+    if(this.props.latitud !== null)
+    {
+      setTimeout(() => this.map.animateToRegion(region), 100);
+    }
+
+  }
+
+
+  // onMapReady = e => {
+  //   if (!this.state.ready) {
+  //     this.setState({ ready: true });
+  //   }
+  // };
+
+  // onRegionChange = region => {
+  //   console.log("onRegionChange", region);
+  // };
+
+  // onRegionChangeComplete = region => {
+  //   console.log("onRegionChangeComplete", region);
+  // };
+
 
   focusin() {
     if (this.props.campoError === "nombre") {
@@ -191,12 +232,11 @@ class RegisterVendedor extends Component {
     }, 50);
   }
 
-  componentDidMount () {
-    this.props.cambiarLocalizacion(null, null);
-  }
+
 
   render() {
     //const { latitud, longitud } = this.buildValuesFromProps();
+    //const {latitud, longitud} = this.props;
 
     let { hasError, isLoading, campoError, latitud, longitud  } = this.props;
     if (hasError) {
@@ -352,59 +392,69 @@ class RegisterVendedor extends Component {
               />
             </View>
 
-            <View style={styles.containerMapa}>
+            <View>
               <Text style={styles.bigblack}>Sitúe su comercio en el mapa:</Text>
-              <View
-                style={{
-                  // width: "40%",
-                  justifyContent: "center",
-                  alignItems: "center"
-                }}
-              >
-                <TouchableOpacity
+              <View style={latitud === null ? styles.containerMapa : styles.containerMapa2}>
+                <View
                   style={{
+                    marginRight: 10, 
+                    width: winWidth * 0.422,
                     justifyContent: "center",
                     alignItems: "center"
                   }}
-                  onPress={() => {
-                    this.props.goMapa();
-                  }}
-                >
-                  <Image
-                    style={{
-                      height: 100,
-                      width: 100,
-                      resizeMode: "cover",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginTop: 20
-                    }}
-                    resizeMethod={"resize"}
-                    source={require("GreenWaysProject/images/iconoMapa2.png")}
-                  />
-                </TouchableOpacity>
-              </View>
 
-              {latitud !== null ? (
-                <View
-                  style={{ alignItems: "center", marginTop: winHeight * 0.01 }}
+                  style={latitud === null ? styles.containerIconoMapa : styles.containerIconoMapa2}
                 >
-                  <Text
-                    style={{
-                      color: "black",
-                      fontSize: 16
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.goMapa();
                     }}
                   >
-                    {latitud !== null
-                      ? "[" +
-                        longitud +
-                        " , " +
-                        latitud +
-                        "]"
-                      : null}
-                  </Text>
+                    <Image
+                      style={{
+                        height: 100,
+                        width: 100,
+                        resizeMode: "cover",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: 20
+                      }}
+                      resizeMethod={"resize"}
+                      source={require("GreenWaysProject/images/iconoMapa2.png")}
+                    />
+                  </TouchableOpacity>
                 </View>
-              ) : null}
+
+                {latitud !== null ?
+                  <View style={{height: winWidth * 0.48, width: winWidth * 0.48, borderWidth: 2, borderColor: "black", marginTop: 20}}>  
+                    <MapView
+                      ref={map => {
+                        this.map = map;
+                      }}
+                      initialRegion={{
+                        latitude: this.props.latitud,
+                        longitude: this.props.longitud,
+                        latitudeDelta: 0.003,
+                        longitudeDelta: 0.003
+                      }}
+                      onMapReady={this.onMapReady}
+                      showsMyLocationButton={false}
+                      scrollEnabled={false}
+                      zoomEnabled={false}
+                      style={StyleSheet.absoluteFill}
+                      textStyle={{ color: "#bc8b00" }}
+                      containerStyle={{
+                        backgroundColor: "white",
+                        borderColor: "#BC8B00"
+                      }}
+                    >
+                      <Marker
+                        coordinate={{latitude: latitud, longitude: longitud}}
+                      />
+                    </MapView>
+                  </View>
+                : null}
+              </View>
             </View>
 
             <Text />
@@ -423,16 +473,13 @@ class RegisterVendedor extends Component {
               >
                 <View
                   style={{
-                    width: "40%",
+                    marginRight: 10, 
+                    width: winWidth * 0.422,
                     justifyContent: "center",
                     alignItems: "center"
                   }}
                 >
                   <TouchableOpacity
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center"
-                    }}
                     onPress={this.selectPhoto.bind(this)}
                   >
                     <Image
@@ -454,7 +501,8 @@ class RegisterVendedor extends Component {
                   style={{
                     justifyContent: "center",
                     alignItems: "center",
-                    width: "60%"
+                    width: winWidth * 0.48,
+                    height: winWidth * 0.48
                   }}
                 >
                   <Image
@@ -643,59 +691,75 @@ class RegisterVendedor extends Component {
 
             <Text />
 
-            <View style={styles.containerMapa}>
+            <View>
               <Text style={styles.bigblack}>Sitúe su comercio en el mapa:</Text>
-              <View
-                style={{
-                  // width: "40%",
-                  justifyContent: "center",
-                  alignItems: "center"
-                }}
-              >
-                <TouchableOpacity
+              <View style={latitud === null ? styles.containerMapa : styles.containerMapa2}>
+                <View
                   style={{
+                  //  width: "40%",
+                   // flex: 0.4,
+                    marginRight: 10, 
+                    width: winWidth * 0.422,
                     justifyContent: "center",
                     alignItems: "center"
                   }}
-                  onPress={() => {
-                    this.props.goMapa();
-                  }}
-                >
-                  <Image
-                    style={{
-                      height: 100,
-                      width: 100,
-                      resizeMode: "cover",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginTop: 20
-                    }}
-                    resizeMethod={"resize"}
-                    source={require("GreenWaysProject/images/iconoMapa2.png")}
-                  />
-                </TouchableOpacity>
-              </View>
 
-              {latitud !== null ? (
-                <View
-                  style={{ alignItems: "center", marginTop: winHeight * 0.01 }}
+                  style={latitud === null ? styles.containerIconoMapa : styles.containerIconoMapa2}
                 >
-                  <Text
-                    style={{
-                      color: "black",
-                      fontSize: 16
+                  <TouchableOpacity
+                    // style={{
+                    //   justifyContent: "center",
+                    //   alignItems: "center"
+                    // }}
+                    onPress={() => {
+                      this.props.goMapa();
                     }}
                   >
-                    {latitud !== null
-                      ? "[" +
-                        longitud +
-                        " , " +
-                        latitud +
-                        "]"
-                      : null}
-                  </Text>
+                    <Image
+                      style={{
+                        height: 100,
+                        width: 100,
+                        resizeMode: "cover",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: 20
+                      }}
+                      resizeMethod={"resize"}
+                      source={require("GreenWaysProject/images/iconoMapa2.png")}
+                    />
+                  </TouchableOpacity>
                 </View>
-              ) : null}
+
+                {latitud !== null ?
+                  <View style={{height: winWidth * 0.48, width: winWidth * 0.48, borderWidth: 2, borderColor: "black", marginTop: 20}}>  
+                    <MapView
+                      ref={map => {
+                        this.map = map;
+                      }}
+                      initialRegion={{
+                        latitude: this.props.latitud,
+                        longitude: this.props.longitud,
+                        latitudeDelta: 0.003,
+                        longitudeDelta: 0.003
+                      }}
+                      onMapReady={this.onMapReady}
+                      showsMyLocationButton={false}
+                      scrollEnabled={false}
+                      zoomEnabled={false}
+                      style={StyleSheet.absoluteFill}
+                      textStyle={{ color: "#bc8b00" }}
+                      containerStyle={{
+                        backgroundColor: "white",
+                        borderColor: "#BC8B00"
+                      }}
+                    >
+                      <Marker
+                        coordinate={{latitude: latitud, longitude: longitud}}
+                      />
+                    </MapView>
+                  </View>
+                : null}
+              </View>
             </View>
 
             <Text />
@@ -714,16 +778,13 @@ class RegisterVendedor extends Component {
               >
                 <View
                   style={{
-                    width: "40%",
+                    marginRight: 10, 
+                    width: winWidth * 0.422,
                     justifyContent: "center",
                     alignItems: "center"
                   }}
                 >
                   <TouchableOpacity
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center"
-                    }}
                     onPress={this.selectPhoto.bind(this)}
                   >
                     <Image
@@ -745,7 +806,8 @@ class RegisterVendedor extends Component {
                   style={{
                     justifyContent: "center",
                     alignItems: "center",
-                    width: "60%"
+                    width: winWidth * 0.48,
+                    height: winWidth * 0.48
                   }}
                 >
                   <Image
@@ -925,13 +987,13 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   image: {
-    width: 200,
-    height: 200,
+    width: winWidth * 0.48,
+    height: winWidth * 0.48,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
     marginBottom: 40,
-    borderColor: "#8E8E8E",
+    borderColor: "black",
     borderWidth: 2
   },
   textoBotones: {
@@ -945,5 +1007,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: winHeight * 0.06,
     marginTop: winHeight * 0.01
+  },
+  containerMapa: {
+
+  },
+  containerMapa2: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  containerIconoMapa: {
+    marginRight: 10, 
+  //  width: winWidth * 0.422,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  containerIconoMapa2: {
+    marginRight: 10, 
+    width: winWidth * 0.422,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });

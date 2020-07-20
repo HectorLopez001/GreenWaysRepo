@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import MapView from "react-native-maps";
+import { Marker } from "react-native-maps";
 import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -194,14 +196,36 @@ class ModificarComercio extends Component {
           },
           function() {
             this.props.cambiarLocalizacion(parseFloat(responseJson[0].latitud), parseFloat(responseJson[0].longitud));
+            setTimeout(() => this.map.animateToRegion({
+              latitude: parseFloat(responseJson[0].latitud),
+              longitude: parseFloat(responseJson[0].longitud),
+              latitudeDelta: 0.003,
+              longitudeDelta: 0.003
+            }), 100);
           }
-        );
-
-        
+        );        
       })
       .catch(error => {
         console.error(error);
       });
+  }
+
+  componentDidUpdate() {
+
+    let region = {
+      latitude: this.props.latitud,
+      longitude: this.props.longitud,
+      latitudeDelta: 0.003,
+      longitudeDelta: 0.003
+    };
+
+    this.props.cambiarLocalizacion(this.props.latitud, this.props.longitud);
+
+    if(this.props.latitud !== null)
+    {
+      setTimeout(() => this.map.animateToRegion(region), 100);
+    }
+
   }
 
   render() {
@@ -322,22 +346,20 @@ class ModificarComercio extends Component {
 
               <Text />
 
-              <View style={styles.containerMapa}>
-                <Text style={styles.bigblack}>
-                  Sitúe de nuevo su comercio en el mapa:
-                </Text>
+              <View>
+              <Text style={styles.bigblack}>Sitúe de nuevo su comercio en el mapa:</Text>
+              <View style={latitud === null ? styles.containerMapa : styles.containerMapa2}>
                 <View
                   style={{
-                    // width: "40%",
+                    marginRight: 10, 
+                    width: winWidth * 0.422,
                     justifyContent: "center",
                     alignItems: "center"
                   }}
+
+                  style={latitud === null ? styles.containerIconoMapa : styles.containerIconoMapa2}
                 >
                   <TouchableOpacity
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center"
-                    }}
                     onPress={() => {
                       this.props.goMapa();
                     }}
@@ -357,30 +379,37 @@ class ModificarComercio extends Component {
                   </TouchableOpacity>
                 </View>
 
-                {latitud !== null ? (
-                  <View
-                    style={{
-                      alignItems: "center",
-                      marginTop: winHeight * 0.01
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "black",
-                        fontSize: 16
+                {latitud !== null ?
+                  <View style={{height: winWidth * 0.48, width: winWidth * 0.48, borderWidth: 2, borderColor: "black", marginTop: 20}}>  
+                    <MapView
+                      ref={map => {
+                        this.map = map;
+                      }}
+                      initialRegion={{
+                        latitude: this.props.latitud,
+                        longitude: this.props.longitud,
+                        latitudeDelta: 0.003,
+                        longitudeDelta: 0.003
+                      }}
+                      onMapReady={this.onMapReady}
+                      showsMyLocationButton={false}
+                      scrollEnabled={false}
+                      zoomEnabled={false}
+                      style={StyleSheet.absoluteFill}
+                      textStyle={{ color: "#bc8b00" }}
+                      containerStyle={{
+                        backgroundColor: "white",
+                        borderColor: "#BC8B00"
                       }}
                     >
-                      {latitud !== null
-                        ? "[" +
-                          longitud +
-                          " , " +
-                          latitud +
-                          "]"
-                        : null}
-                    </Text>
+                      <Marker
+                        coordinate={{latitude: latitud, longitude: longitud}}
+                      />
+                    </MapView>
                   </View>
-                ) : null}
+                : null}
               </View>
+            </View>
 
               <Text />
 
@@ -389,19 +418,22 @@ class ModificarComercio extends Component {
                   Introduzca una nueva imagen del comercio
                 </Text>
 
-                <View style={{ flexDirection: "row" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
                   <View
                     style={{
-                      width: "40%",
+                      marginRight: 10, 
+                      width: winWidth * 0.422,
                       justifyContent: "center",
                       alignItems: "center"
                     }}
                   >
                     <TouchableOpacity
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}
                       onPress={this.selectPhoto.bind(this)}
                     >
                       <Image
@@ -424,7 +456,8 @@ class ModificarComercio extends Component {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                      width: "60%"
+                      width: winWidth * 0.48,
+                      height: winWidth * 0.48
                     }}
                   >
                     <Image
@@ -598,22 +631,20 @@ class ModificarComercio extends Component {
                 </View>
               </View>
 
-              <View style={styles.containerMapa}>
-                <Text style={styles.bigblack}>
-                  Sitúe de nuevo su comercio en el mapa:
-                </Text>
+              <View>
+              <Text style={styles.bigblack}>Sitúe de nuevo su comercio en el mapa:</Text>
+              <View style={latitud === null ? styles.containerMapa : styles.containerMapa2}>
                 <View
                   style={{
-                    // width: "40%",
+                    marginRight: 10, 
+                    width: winWidth * 0.422,
                     justifyContent: "center",
                     alignItems: "center"
                   }}
+
+                  style={latitud === null ? styles.containerIconoMapa : styles.containerIconoMapa2}
                 >
                   <TouchableOpacity
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center"
-                    }}
                     onPress={() => {
                       this.props.goMapa();
                     }}
@@ -633,30 +664,37 @@ class ModificarComercio extends Component {
                   </TouchableOpacity>
                 </View>
 
-                {latitud !== null ? (
-                  <View
-                    style={{
-                      alignItems: "center",
-                      marginTop: winHeight * 0.01
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "black",
-                        fontSize: 16
+                {latitud !== null ?
+                  <View style={{height: winWidth * 0.48, width: winWidth * 0.48, borderWidth: 2, borderColor: "black", marginTop: 20}}>  
+                    <MapView
+                      ref={map => {
+                        this.map = map;
+                      }}
+                      initialRegion={{
+                        latitude: this.props.latitud,
+                        longitude: this.props.longitud,
+                        latitudeDelta: 0.003,
+                        longitudeDelta: 0.003
+                      }}
+                      onMapReady={this.onMapReady}
+                      showsMyLocationButton={false}
+                      scrollEnabled={false}
+                      zoomEnabled={false}
+                      style={StyleSheet.absoluteFill}
+                      textStyle={{ color: "#bc8b00" }}
+                      containerStyle={{
+                        backgroundColor: "white",
+                        borderColor: "#BC8B00"
                       }}
                     >
-                      {latitud !== null
-                        ? "[" +
-                          longitud +
-                          " , " +
-                          latitud +
-                          "]"
-                        : null}
-                    </Text>
+                      <Marker
+                        coordinate={{latitude: latitud, longitude: longitud}}
+                      />
+                    </MapView>
                   </View>
-                ) : null}
+                : null}
               </View>
+            </View>
 
               <Text />
 
@@ -665,19 +703,22 @@ class ModificarComercio extends Component {
                   Introduzca una nueva imagen del comercio
                 </Text>
 
-                <View style={{ flexDirection: "row" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
                   <View
                     style={{
-                      width: "40%",
+                      marginRight: 10, 
+                      width: winWidth * 0.422,
                       justifyContent: "center",
                       alignItems: "center"
                     }}
                   >
                     <TouchableOpacity
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}
                       onPress={this.selectPhoto.bind(this)}
                     >
                       <Image
@@ -700,7 +741,8 @@ class ModificarComercio extends Component {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                      width: "60%"
+                      width: winWidth * 0.48,
+                      height: winWidth * 0.48
                     }}
                   >
                     <Image
@@ -899,13 +941,13 @@ const styles = StyleSheet.create({
     alignItems: "flex-start"
   },
   image: {
-    width: 200,
-    height: 200,
+    width: winWidth * 0.48,
+    height: winWidth * 0.48,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
     marginBottom: 40,
-    borderColor: "#8E8E8E",
+    borderColor: "black",
     borderWidth: 2
   },
   tinyblack: {
@@ -916,5 +958,25 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     alignItems: "center",
     justifyContent: "center"
+  },
+  containerMapa: {
+
+  },
+  containerMapa2: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  containerIconoMapa: {
+    marginRight: 10, 
+  //  width: winWidth * 0.422,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  containerIconoMapa2: {
+    marginRight: 10, 
+    width: winWidth * 0.422,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
