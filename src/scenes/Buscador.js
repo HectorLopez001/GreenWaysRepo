@@ -691,13 +691,13 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   separator: {
-    flex: 1,
+    //flex: 1,
     height: StyleSheet.hairlineWidth + 2,
     backgroundColor: "#8E8E8E"
   },
   listFooter: {
-    borderBottomColor: "#8E8E8E",
-    borderBottomWidth: 2
+    height: StyleSheet.hairlineWidth + 2,
+    backgroundColor: "#8E8E8E"
   },
   mostrarTick: {
     flex: 0.15,

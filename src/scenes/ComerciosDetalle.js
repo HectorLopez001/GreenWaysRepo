@@ -377,11 +377,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#36ada4"
   },
   listFooter: {
-    borderBottomColor: "#8E8E8E",
-    borderBottomWidth: 2
+    height: StyleSheet.hairlineWidth + 2,
+    backgroundColor: "#8E8E8E"
   },
   separator: {
-    flex: 1,
     height: StyleSheet.hairlineWidth + 2,
     backgroundColor: "#8E8E8E"
   },

@@ -626,13 +626,12 @@ const styles = StyleSheet.create({
     color: "black"
   },
   separator: {
-    flex: 1,
     height: StyleSheet.hairlineWidth + 2,
     backgroundColor: "#8E8E8E"
   },
   listFooter: {
-    borderBottomColor: "#8E8E8E",
-    borderBottomWidth: 2
+    height: StyleSheet.hairlineWidth + 2,
+    backgroundColor: "#8E8E8E"
   },
   button: {
     backgroundColor: "#36ada4"

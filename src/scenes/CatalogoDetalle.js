@@ -781,8 +781,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#8E8E8E"
   },
   listFooter: {
-    borderBottomColor: "#8E8E8E",
-    borderBottomWidth: 2
+    height: StyleSheet.hairlineWidth + 2,
+    backgroundColor: "#8E8E8E"
   },
   lineaBotones: {
     flexDirection: "row",
