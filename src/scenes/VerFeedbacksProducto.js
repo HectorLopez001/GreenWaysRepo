@@ -21,9 +21,9 @@ import Loader from "./../components/Loader";
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
-class VerFeedbacksComercio extends Component {
+class VerFeedbacksProducto extends Component {
   static navigationOptions = {
-    title: "Valoraciones del Comercio",
+    title: "Valoraciones del Producto",
     headerRight: (
       <View>
         <TouchableOpacity
@@ -52,8 +52,9 @@ class VerFeedbacksComercio extends Component {
 
     this.state = {
       nombreUsuario: null,
+      nombreProducto: null,
       datas: null,
-      numValoracionesAlComercio: null,
+      numValoracionesAlProducto: null,
       notaMedia: null,
       isStorageLoaded: false
     };
@@ -66,8 +67,14 @@ class VerFeedbacksComercio extends Component {
       });
     });
 
+    await AsyncStorage.getItem("nombreProducto").then(value => {
+      this.setState({
+        nombreProducto: value
+      });
+    });
+
     return fetch(
-      "https://thegreenways.es/listaFeedbacksComercioComerciante.php",
+      "https://thegreenways.es/listaFeedbacksProductoComerciante.php",
       {
         method: "POST",
         headers: {
@@ -75,7 +82,8 @@ class VerFeedbacksComercio extends Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          nombreUsuario: this.state.nombreUsuario
+          nombreUsuario: this.state.nombreUsuario,
+          nombreProducto: this.state.nombreProducto,
         })
       }
     )
@@ -112,19 +120,17 @@ class VerFeedbacksComercio extends Component {
   media(array) {
     var suma = parseFloat(0);
     var i;
-    var contadorValoracionesComercio = 0;
+    var contadorValoracionesProducto = 0;
     for (i = 0; i < array.length; i++) {
-      if (array[i].idProducto == null) {
-        contadorValoracionesComercio = contadorValoracionesComercio + 1;
-        suma = suma + parseFloat(array[i].nota);
-      }
+        contadorValoracionesProducto = contadorValoracionesProducto + 1;
+        suma = suma + parseFloat(array[i].nota);      
     }
 
-    if (contadorValoracionesComercio > 0) {
+    if (contadorValoracionesProducto > 0) {
       this.setState({
-        numValoracionesAlComercio: contadorValoracionesComercio
+        numValoracionesAlProducto: contadorValoracionesProducto
       });
-      return suma / contadorValoracionesComercio;
+      return suma / contadorValoracionesProducto;
     } else {
       return 0;
     }
@@ -150,9 +156,9 @@ class VerFeedbacksComercio extends Component {
               >
                 <View
                   style={{
-                  //  flexDirection: "row"
-                  justifyContent: "center",
-                  alignItems: "center",
+                   // flexDirection: "row"
+                   justifyContent: "center",
+                   alignItems: "center",
                   }}
                 >
                   <View
@@ -192,14 +198,14 @@ class VerFeedbacksComercio extends Component {
                   </View>
                 </View>
 
-                {this.state.numValoracionesAlComercio == null &&
+                {/* {this.state.numValoracionesAlProducto == null &&
                 this.state.datas != null ? (
                   <View style={{ marginTop: winHeight * 0.02 }}>
                     <Text style={styles.rowViewContainer1}>
-                      {"[Aún no hay valoraciones sobre éste comercio.]"}
+                      {"[Aún no hay valoraciones sobre éste producto.]"}
                     </Text>
                   </View>
-                ) : null}
+                ) : null} */}
               </View>
             </View>
 
@@ -232,7 +238,7 @@ class VerFeedbacksComercio extends Component {
                     marginRight: winWidth * 0.02
                   }}
                 >
-                  (Aún no hay valoraciones para tu comercio.)
+                  (Aún no hay valoraciones para este producto.)
                 </Text>
               ) : null}
             </View>
@@ -379,7 +385,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-   // goComercios: () => dispatch(MainActions.goComercios()),
    // goCatalogoCliente: () => dispatch(MainActions.goCatalogoCliente())
   };
 };
@@ -387,7 +392,7 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(VerFeedbacksComercio);
+)(VerFeedbacksProducto);
 
 const styles = StyleSheet.create({
   MainContainer: {

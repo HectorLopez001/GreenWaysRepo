@@ -6,7 +6,8 @@ const initialState = {
     isLoading: false,
     name: '',
     username: '',
-    password: ''
+    password: '',
+    categoria: "TODO",
 };
 
 
@@ -25,6 +26,11 @@ export default (state = initialState, action) => {
 
             return Object.assign({}, state, {
                 isLoading: action.isLoading,
+            });
+
+        case ActionTypes.CATEGORIA:
+            return Object.assign({}, state, {
+                categoria: action.categoria
             });
 
         default:

@@ -73,7 +73,10 @@ import PagComercioBuscador from "../scenes/PagComercioBuscador";
 
 import PagComercioMapa from "../scenes/PagComercioMapa";
 
+import VerFeedbacksComercioProductos from "../scenes/VerFeedbacksComercioProductos";
 import VerFeedbacksComercio from "../scenes/VerFeedbacksComercio";
+import VerFeedbacksProductos from "../scenes/VerFeedbacksProductos";
+import VerFeedbacksProducto from "../scenes/VerFeedbacksProducto";
 
 const RouterWithRedux = connect()(Router);
 
@@ -362,6 +365,24 @@ class Root extends Component {
               hideNavBar={false}
               key="VerFeedbacksComercio"
               title="VerFeedbacksComercio"
+            />
+            <Scene
+              component={VerFeedbacksComercioProductos}
+              hideNavBar={false}
+              key="VerFeedbacksComercioProductos"
+              title="VerFeedbacksComercioProductos"
+            />
+            <Scene
+              component={VerFeedbacksProductos}
+              hideNavBar={false}
+              key="VerFeedbacksProductos"
+              title="VerFeedbacksProductos"
+            />
+            <Scene
+              component={VerFeedbacksProducto}
+              hideNavBar={false}
+              key="VerFeedbacksProducto"
+              title="VerFeedbacksProducto"
             />
             <Scene
               component={Mapa}

@@ -32,10 +32,34 @@ const goCatalogo = () => {
   };
 };
 
-const goVerFeedbacks = () => {
+const goVerFeedbacksComercio = () => {
   Actions.VerFeedbacksComercio();
   return {
     type: ActionTypes.VER_FEEDBACKS_COMERCIO
+  };
+};
+
+const goVerFeedbacksProductos = () => {
+
+  AsyncStorage.removeItem("categoriaProductoFeedback");
+
+  Actions.VerFeedbacksProductos();
+  return {
+    type: ActionTypes.VER_FEEDBACKS_PRODUCTOS
+  };
+};
+
+const goVerFeedbacksProducto = () => {
+  Actions.VerFeedbacksProducto();
+  return {
+    type: ActionTypes.VER_FEEDBACKS_PRODUCTO
+  };
+};
+
+const goVerFeedbacks = () => {
+  Actions.VerFeedbacksComercioProductos();
+  return {
+    type: ActionTypes.VER_FEEDBACKS_COMERCIO_PRODUCTOS
   };
 };
 
@@ -66,6 +90,19 @@ const terminarLoader = () => {
   };
 };
 
+const cambiarCategoria = stringCategoria => {
+  return dispatch => {
+    dispatch(categoria(stringCategoria));
+  };
+};
+
+const categoria = string => {
+  return {
+    type: ActionTypes.CATEGORIA,
+    categoria: string
+  };
+};
+
 export default {
   goModificarComercio,
   goVerFeedbacks,
@@ -75,5 +112,9 @@ export default {
   catalogoHasError,
   catalogoIsLoading,
   isLogged,
-  terminarLoader
+  terminarLoader,
+  goVerFeedbacksComercio,
+  goVerFeedbacksProductos,
+  goVerFeedbacksProducto,
+  cambiarCategoria
 };
