@@ -59,6 +59,8 @@ class GestionComercios extends Component {
       numHomeComercios: null,
       hayCatalogos: null,
       numCatalogos: null,
+      hayCategorias: null,
+      numCategorias: null,
       isStorageLoaded: false
     };
   }
@@ -86,7 +88,7 @@ class GestionComercios extends Component {
             });
 
           return fetch(
-            "https://thegreenways.es/numeroHomeComerciosYCatalogosRevisables.php", {
+            "https://thegreenways.es/numeroHomeComerciosYCatalogosYCategoriasRevisables.php", {
               method: "POST",
               headers: {
                 Accept: "application/json",
@@ -101,6 +103,7 @@ class GestionComercios extends Component {
                 this.setState({
                     hayHomeComercios: "no",
                     hayCatalogos: "no",
+                    hayCategorias: "no",
                     isStorageLoaded: true
                   });
               }
@@ -115,6 +118,8 @@ class GestionComercios extends Component {
                 var auxNumHomeComercios = 0;
                 var auxHayCatalogos = "no";
                 var auxNumCatalogos = 0;
+                var auxHayCategorias = "no";
+                var auxNumCategorias = 0;
 
                 for (var [key, value] of aux) {
                   if (value.revisar === "0") {
@@ -122,6 +127,9 @@ class GestionComercios extends Component {
                   }
                   if (value.revisarCatalogo === "0") {
                     auxNumCatalogos = auxNumCatalogos + 1;
+                  }
+                  if (value.categoriasComercioRevisables !== null) {
+                    auxNumCategorias = auxNumCategorias + 1;
                   }
                 }
 
@@ -133,6 +141,10 @@ class GestionComercios extends Component {
                   auxHayCatalogos = "si";
                 }
 
+                if (auxNumCategorias > 0) {
+                  auxHayCategorias = "si";
+                }
+
                 this.setState(
                   {
                     datas2: responseJson2,
@@ -140,6 +152,8 @@ class GestionComercios extends Component {
                     numHomeComercios: auxNumHomeComercios,
                     hayCatalogos: auxHayCatalogos,
                     numCatalogos: auxNumCatalogos,
+                    hayCategorias: auxHayCategorias,
+                    numCategorias: auxNumCategorias,
                     isStorageLoaded: true
                   });
               }
@@ -158,7 +172,7 @@ class GestionComercios extends Component {
             });
 
           return fetch(
-            "https://thegreenways.es/numeroHomeComerciosYCatalogosRevisables.php", {
+            "https://thegreenways.es/numeroHomeComerciosYCatalogosYCategoriasRevisables.php", {
               method: "POST",
               headers: {
                 Accept: "application/json",
@@ -173,6 +187,7 @@ class GestionComercios extends Component {
                   {
                     hayHomeComercios: "no",
                     hayCatalogos: "no",
+                    hayCategorias: "no",
                     isStorageLoaded: true
                   });
               }
@@ -187,6 +202,8 @@ class GestionComercios extends Component {
                 var auxNumHomeComercios = 0;
                 var auxHayCatalogos = "no";
                 var auxNumCatalogos = 0;
+                var auxHayCategorias = "no";
+                var auxNumCategorias = 0;
 
                 for (var [key, value] of aux) {
                   if (value.revisar === "0") {
@@ -194,6 +211,9 @@ class GestionComercios extends Component {
                   }
                   if (value.revisarCatalogo === "0") {
                     auxNumCatalogos = auxNumCatalogos + 1;
+                  }
+                  if (value.categoriasComercioRevisables !== null) {
+                    auxNumCategorias = auxNumCategorias + 1;
                   }
                 }
 
@@ -205,12 +225,18 @@ class GestionComercios extends Component {
                   auxHayCatalogos = "si";
                 }
 
+                if (auxNumCategorias > 0) {
+                  auxHayCategorias = "si";
+                }
+
                 this.setState({
                     datas2: responseJson2,
                     hayHomeComercios: auxHayHomeComercios,
                     numHomeComercios: auxNumHomeComercios,
                     hayCatalogos: auxHayCatalogos,
                     numCatalogos: auxNumCatalogos,
+                    hayCategorias: auxHayCategorias,
+                    numCategorias: auxNumCategorias,
                     isStorageLoaded: true
                   });
               }
@@ -346,6 +372,41 @@ class GestionComercios extends Component {
             >
               <TouchableOpacity
                 onPress={() => {
+                  this.props.goGestionCategorias();
+                }}
+              >
+                <Animated.View
+                  style={{
+                    height: winHeight * 0.08,
+                    borderWidth: 2,
+                    borderColor: "black",
+                    borderRadius: 20,
+                    backgroundColor:
+                      this.state.hayCategorias === "si" //&& flicker === "GestionComercios"
+                      ? color 
+                      : "#79B700",
+                    marginLeft: "2%",
+                    marginRight: "2%",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <Text style={styles.textoBotones}>
+                    {this.state.hayCategorias === "si"
+                      ? "CATEGORIA (" + this.state.numCategorias + ")"
+                      : "CATEGORIA"}
+                  </Text>
+                </Animated.View>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                marginTop: winHeight * 0.01
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
                   this.props.goGestionCatalogoProductos();
                 }}
               >
@@ -367,7 +428,7 @@ class GestionComercios extends Component {
                 >
                   <Text style={styles.textoBotones}>
                     {this.state.hayCatalogos === "si"
-                      ? "CATÁLOGO(" + this.state.numCatalogos + ")"
+                      ? "CATÁLOGO (" + this.state.numCatalogos + ")"
                       : "CATÁLOGO"}
                   </Text>
                 </Animated.View>
@@ -376,7 +437,7 @@ class GestionComercios extends Component {
 
             <View
               style={{
-                marginTop: winHeight * 0.52,
+                marginTop: winHeight * 0.42,
                 marginBottom: winHeight * 0.01
               }}
             >
@@ -423,6 +484,8 @@ const mapDispatchToProps = dispatch => {
     goPrincipal: () => dispatch(GestionComerciosActions.goPrincipal()),
     goGestionPagComercio: () =>
       dispatch(GestionComerciosActions.goGestionPagComercio()),
+    goGestionCategorias: () =>
+      dispatch(GestionComerciosActions.goGestionCategorias()),
     goGestionCatalogoProductos: () =>
       dispatch(GestionComerciosActions.goGestionCatalogoProductos()),
     goGestionDenuncias: () =>

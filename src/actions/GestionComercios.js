@@ -25,12 +25,131 @@ const filaClickada3 = string => {
   };
 };
 
+const filaClickadaCategoria = nombreCategoriaConIdComercio => {
+  return {
+    type:ActionTypes.FILA_CLICKADA_CATEGORIA,
+    categoriaClickada: nombreCategoriaConIdComercio
+  };
+};
+
+
 const goPrincipal = () => {
   Actions.MainAdmin();
   return {
     type: ActionTypes.MAINADMIN,
     // flicker: "MainAdmin"
   };
+};
+
+const goGestionCategorias = () => {
+  Actions.GestionCategorias();
+  return {
+    type: ActionTypes.GESTION_CATEGORIAS
+  };
+};
+
+const actualizarCategorias = newCategorias => {
+  return dispatch => {
+    dispatch(categorias(newCategorias));
+  };
+};
+
+const categorias = newCategorias => {
+  return {
+    type: ActionTypes.ACTUALIZAR_CATEGORIAS_ADMIN,
+    categorias: newCategorias
+  };
+};
+
+const categoriasIsLoading = bool => {
+  return {
+    type: ActionTypes.CATEGORIA_ADMIN_IS_LOADING,
+    isLoadingCategoria: bool
+  };
+};
+
+const reemplazarCategoria = (categoriaVieja, categoriaNueva) => {
+  return {
+    type: ActionTypes.REEMPLAZAR_CATEGORIA_ADMIN,
+    categoriaVieja: categoriaVieja,
+    categoriaNueva: categoriaNueva
+  }
+};
+
+const quitarCategoria = (categoria) => {
+  return dispatch => {
+    dispatch(quitarCategoria2(categoria));
+  }
+}
+
+const quitarCategoria2 = (categoria) => {
+  return {
+    type: ActionTypes.QUITAR_CATEGORIA_ADMIN,
+    categoriaQuitar: categoria
+  };
+};
+
+const goGestionCategoriasBotonVolver = (numeroCategoriasRevisables, idComercio, nombreComercio) => {
+
+  if(numeroCategoriasRevisables !== 0)
+  {
+    Alert.alert(
+      "Aviso",
+      "¿Has finalizado la revisión de todas las categorias?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel"
+        },
+        {
+          text: "Sí",
+          onPress: () => {
+            revisadasCategorias(idComercio, nombreComercio);
+            Actions.GestionCategorias();
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {
+            Actions.GestionCategorias();
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  }
+  else{
+    Actions.GestionCategorias();
+  }
+
+  return {
+    type: ActionTypes.GESTION_CATEGORIAS,
+  };
+};
+
+const revisadasCategorias = (idComercio, nombreComercio) => {
+  fetch("https://thegreenways.es/revisadasCategorias.php", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      idComercio: idComercio
+    })
+  })
+    .then(res => res.json())
+    .then(responseJson => {
+      if (responseJson == "revisado") {
+        Alert.alert("Aviso", "Todas las categorias de " + nombreComercio + " han sido aceptadas.");
+      } else {
+        Alert.alert("Aviso", responseJson);
+      }
+    })
+    .catch(e => {
+      console.warn(e);
+    });
 };
 
 const goGestionDenuncias = () => {
@@ -72,6 +191,22 @@ const volverInicio = () => {
     // flicker: "MainAdmin"
   };
 };
+
+const actualizarNumeroCategoriasRevisables = (numero) => {  
+
+ // alert(numero);
+  return {
+    type: ActionTypes.ACTUALIZAR_NUMERO_CATEGORIAS_REVISABLES,
+    numCategoriasRevisables: numero
+  }
+};
+
+// const categoriasIsLoading = bool => {
+//   return {
+//     type: ActionTypes.CATEGORIAS_ADMIN_IS_LOADING,
+//     isLoadingCategoria: bool
+//   };
+// };
 
 const goGestionComercios = (clicsPantallaActual) => {
   fetch("https://thegreenways.es/comprobarHomeComerciosRevisados.php", {
@@ -475,6 +610,30 @@ const eliminarComercio = (nombreComercio, rowId, sceneProcedencia) => {
     });
 };
 
+const eliminarComercioDesdeGestionCategorias = (nombreComercio) => {
+  fetch("https://thegreenways.es/eliminarComercio.php", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      nombreComercio: nombreComercio
+    })
+  })
+    .then(res => res.json())
+    .then(responseJson => {
+      if (responseJson == "eliminado") {
+        Actions.GestionCategorias();
+      } else {
+        Alert.alert("Aviso", responseJson);
+      }
+    })
+    .catch(e => {
+      console.warn(e);
+    });
+};
+
 const eliminarComercioDenuncia = (
   idDenuncia,
   nombreAEliminar,
@@ -693,6 +852,24 @@ function mensajeEliminar(nombreComercio, rowID, sceneProcedencia) {
   };
 }
 
+function mensajeEliminarComercioDesdeGestionCategoria(nombreComercio) {
+  Alert.alert(
+    "Aviso",
+    "¿Deseas eliminar el comercio " + nombreComercio + "?",
+    [
+      {
+        text: "Sí",
+        onPress: () => eliminarComercioDesdeGestionCategorias(nombreComercio)
+      },
+      { text: "No", onPress: () => null }
+    ],
+    { cancelable: false }
+  );
+  return {
+    type: ActionTypes.GESTION_PAG_COMERCIO
+  };
+}
+
 function mensajeEliminar2(nombreComercio, nombreProducto, rowNumber) {
   Alert.alert(
     "Aviso",
@@ -711,6 +888,70 @@ function mensajeEliminar2(nombreComercio, nombreProducto, rowNumber) {
     type: ActionTypes.GESTION_PAG_COMERCIO
   };
 }
+
+function mensajeEliminarCategoria(idComercio, nombreCategoria) {
+
+  return dispatch => {
+
+      Alert.alert(
+    "Aviso",
+    "¿Deseas rechazar la categoria " + nombreCategoria + "?",
+    [
+      {
+        text: "Sí",
+        onPress: () =>  { 
+
+          dispatch(categoriasIsLoading(true));
+
+          fetch("https://thegreenways.es/eliminarCategoriaAdmin.php", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            idComercio: idComercio,
+            categoria: nombreCategoria
+          })
+        })
+          .then(res => res.json())
+          .then(responseJson => {
+
+            dispatch(categoriasIsLoading(false));
+
+            if(responseJson === "borrado")
+            {      
+              dispatch(quitarCategoria(nombreCategoria));
+            }
+            else if((responseJson === "Compruebe conexion a internet."))
+            {
+              Alert.alert("Aviso", responseJson);
+            }
+            else
+            {
+              dispatch(reemplazarCategoria(responseJson, nombreCategoria));
+            }
+          })
+          .catch(e => {
+            console.warn(e);
+          });}
+      },
+      { text: "No", onPress: () => null }
+    ],
+    { cancelable: false }
+  );
+  return {
+    type: ActionTypes.GESTION_CATEGORIAS
+  };
+
+  }
+
+
+
+}
+
+
+
 
 function mensajeEliminar3(
   nombreAEliminar,
@@ -850,6 +1091,12 @@ function mensajeEliminarPagProducto(nombreComercio, nombreProducto, rowNumber) {
   };
 }
 
+const clickadoCategoria = nombreCategoriaConIdComercio => {
+  return dispatch => {
+    dispatch(filaClickadaCategoria(nombreCategoriaConIdComercio));
+  };
+};
+
 const clickado = nombreProducto => {
   return dispatch => {
     dispatch(filaClickada(nombreProducto));
@@ -868,7 +1115,54 @@ const clickado3 = idDenuncia => {
   };
 };
 
+const categoriaRevisada = (categoria, idComercio) => {
+
+  return dispatch => {
+
+  fetch("https://thegreenways.es/revisadaCategoria.php", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      categoria: categoria,
+      idComercio: idComercio
+    })
+  })
+    .then(res => res.json())
+    .then(responseJson => {
+
+      if(responseJson === "revisado")
+      {
+        dispatch(categoriaRevisada2(categoria));
+      }
+      else{
+        Alert.alert("Aviso", responseJson);
+      }
+    })
+    .catch(e => {
+      console.warn(e);
+    });
+
+
+
+  }
+}
+
+const categoriaRevisada2 = categoria => {
+  return{
+    type: ActionTypes.CATEGORIA_REVISADA,
+    categoria: categoria
+  }
+
+}
+
 export default {
+  actualizarCategorias,
+  actualizarNumeroCategoriasRevisables,
+  categoriasIsLoading,
+  categoriaRevisada,
   goPrincipal,
   goGestionPagComercio,
   goGestionCatalogoProductos,
@@ -876,9 +1170,13 @@ export default {
   goGestionComercios2,
   goGestionComercios3,
   goGestionDenuncias,
+  goGestionCategorias,
+  goGestionCategoriasBotonVolver,
   mensajeEliminar,
   mensajeEliminar2,
   mensajeEliminar3,
+  mensajeEliminarCategoria,
+  mensajeEliminarComercioDesdeGestionCategoria,
   eliminarComercio,
   volverCatalogo,
   goCatalogoProductosAdmin,
@@ -890,6 +1188,7 @@ export default {
   clickado,
   clickado2,
   clickado3,
+  clickadoCategoria,
   filaClickada,
   filaClickada2,
   comercioRevisado,

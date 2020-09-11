@@ -32,6 +32,20 @@ const goCatalogo = () => {
   };
 };
 
+const goGestionCategoriasComercio = () => {
+  Actions.CategoriasComercio();
+  return {
+    type: ActionTypes.CATALOGO_CATEGORIAS_COMERCIO
+  };
+};
+
+const goGestionCategoriasCatalogo = () => {
+  Actions.CategoriasYCatalogo();
+  return {
+    type: ActionTypes.CATALOGO_CATEGORIAS_CATALOGO
+  };
+};
+
 const goVerFeedbacksComercio = () => {
   Actions.VerFeedbacksComercio();
   return {
@@ -84,11 +98,11 @@ const goPrincipalVendedor = () => {
   };
 };
 
-const terminarLoader = () => {
-  return {
-    type: ActionTypes.TERMINAR_LOADER
-  };
-};
+// const terminarLoader = () => {
+//   return {
+//     type: ActionTypes.TERMINAR_LOADER
+//   };
+// };
 
 const cambiarCategoria = stringCategoria => {
   return dispatch => {
@@ -104,6 +118,8 @@ const categoria = string => {
 };
 
 export default {
+  goGestionCategoriasComercio,
+  goGestionCategoriasCatalogo,
   goModificarComercio,
   goVerFeedbacks,
   goCatalogo,
@@ -112,7 +128,7 @@ export default {
   catalogoHasError,
   catalogoIsLoading,
   isLogged,
-  terminarLoader,
+  //terminarLoader,
   goVerFeedbacksComercio,
   goVerFeedbacksProductos,
   goVerFeedbacksProducto,

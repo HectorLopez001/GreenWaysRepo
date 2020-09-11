@@ -549,7 +549,7 @@ class Catalogo extends Component {
               >
                 <TouchableOpacity
                   onPress={() => {
-                    this.props.goPrincipal();
+                    this.props.goGestionarCategoriasCatalogo();
                   }}
                 >
                   <View
@@ -651,7 +651,7 @@ const mapDispatchToProps = dispatch => {
   return {
     goInsertar: categoria =>
       dispatch(CatalogoActions.goInsertar(categoria)),
-    goPrincipal: () => dispatch(CatalogoActions.goPrincipal()),
+    goGestionarCategoriasCatalogo: () => dispatch(CatalogoActions.goGestionarCategoriasCatalogo()),
     goCatalogoDetalles: (categoria, productos) =>
       dispatch(CatalogoActions.goCatalogoDetalles(categoria, productos)),
     cambiarCategoria: stringCategoria =>

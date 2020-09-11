@@ -56,9 +56,9 @@ class MainVendedor extends Component {
     }, 3000);*/
   }
 
-  terminarLoader() {
-    this.props.terminarLoader();
-  }
+  // terminarLoader() {
+  //   this.props.terminarLoader();
+  // }
 
   render() {
     let { hasError, isLogged, isLoading } = this.props;
@@ -105,7 +105,7 @@ class MainVendedor extends Component {
         >
           <TouchableOpacity
             onPress={() => {
-              this.props.goCatalogo();
+              this.props.goGestionCategoriasCatalogo();
             }}
           >
             <View
@@ -121,7 +121,7 @@ class MainVendedor extends Component {
                 alignItems: "center"
               }}
             >
-              <Text style={styles.textoBotones}>{"GESTIÓN DEL CATÁLOGO"}</Text>
+              <Text style={styles.textoBotones}>{"GESTIÓN CATEGORIAS/CATÁLOGO"}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -172,11 +172,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     logout: () => dispatch(LoginActions.logout()),
+    goGestionCategoriasCatalogo: () => dispatch(MainVendedorActions.goGestionCategoriasCatalogo()),
     goCatalogo: () => dispatch(MainVendedorActions.goCatalogo()),
-    goModificarComercio: () =>
-      dispatch(MainVendedorActions.goModificarComercio()),
-    goVerFeedbacks: () => dispatch(MainVendedorActions.goVerFeedbacks()),
-    terminarLoader: () => dispatch(MainVendedorActions.terminarLoader())
+    goModificarComercio: () => dispatch(MainVendedorActions.goModificarComercio()),
+    goVerFeedbacks: () => dispatch(MainVendedorActions.goVerFeedbacks())
   };
 };
 

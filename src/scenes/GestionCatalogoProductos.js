@@ -208,10 +208,10 @@ class GestionCatalogoProductos extends Component {
     ).start();
   }
 
-  clickado(nombreComercio) {
-    // alert(nombreProducto);
-    this.props.clickado(nombreComercio);
-  }
+  // clickado(nombreComercio) {
+  //   // alert(nombreProducto);
+  //   this.props.clickado(nombreComercio);
+  // }
 
   render() {
 
@@ -377,8 +377,8 @@ const mapDispatchToProps = dispatch => {
   return {
     goGestionComercios: () =>
       dispatch(GestionComerciosActions.goGestionComercios2()),
-    clickado: nombreComercio =>
-      dispatch(GestionComerciosActions.clickado(nombreComercio)),
+    // clickado: nombreComercio =>
+    //   dispatch(GestionComerciosActions.clickado(nombreComercio)),
     goCatalogoProductosAdmin: () =>
       dispatch(GestionComerciosActions.goCatalogoProductosAdmin()),
     volverInicio: () =>

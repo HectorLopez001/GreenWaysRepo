@@ -19,6 +19,8 @@ import Catalogo from "../scenes/Catalogo";
 import CatalogoDetalle from "../scenes/CatalogoDetalle";
 
 import Insertar from "../scenes/Insertar";
+import CategoriasComercio from "../scenes/CategoriasComercio";
+import CategoriasYCatalogo from "../scenes/CategoriasYCatalogo";
 
 import Modificar from "../scenes/Modificar";
 import ModificarPerfilRegistrado from "../scenes/ModificarPerfilRegistrado";
@@ -46,6 +48,8 @@ import GestionComercios from "../scenes/GestionComercios";
 import GestionDenuncias from "../scenes/GestionDenuncias";
 
 import GestionCatalogoProductos from "../scenes/GestionCatalogoProductos";
+import GestionCategorias from "../scenes/GestionCategorias";
+import GestionCategorias2 from "../scenes/GestionCategorias2";
 import GestionPerfilesUsuario from "../scenes/GestionPerfilesUsuario";
 import GestionFeedbacks from "../scenes/GestionFeedbacks";
 import GestionPagComercio from "../scenes/GestionPagComercio";
@@ -181,6 +185,18 @@ class Root extends Component {
               title="GestionCatalogoProductos"
             />
             <Scene
+              component={GestionCategorias}
+              hideNavBar={false}
+              key="GestionCategorias"
+              title="GestionCategorias"
+            />
+            <Scene
+              component={GestionCategorias2}
+              hideNavBar={false}
+              key="GestionCategorias2"
+              title="GestionCategorias2"
+            />
+            <Scene
               component={GestionUsuariosRegistrados}
               hideNavBar={false}
               key="GestionUsuariosRegistrados"
@@ -227,6 +243,18 @@ class Root extends Component {
               hideNavBar={false}
               key="CatalogoProductosAdmin"
               title="CatalogoProductosAdmin"
+            />
+            <Scene
+              component={CategoriasComercio}
+              hideNavBar={false}
+              key="CategoriasComercio"
+              title="CategoriasComercio"
+            />
+            <Scene
+              component={CategoriasYCatalogo}
+              hideNavBar={false}
+              key="CategoriasYCatalogo"
+              title="CategoriasYCatalogo"
             />
             <Scene
               component={Insertar}

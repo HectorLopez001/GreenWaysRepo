@@ -4,12 +4,6 @@ import { Actions } from "react-native-router-flux";
 import { Alert } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 
-/*const isLogged = (bool) => {
-    return {
-        type: ActionTypes.IS_LOGGED,
-        isLogged: bool
-    }
-};  */
 
 const cambiarCategoria = stringCategoria => {
   return dispatch => {
@@ -24,6 +18,72 @@ const categoria = string => {
   };
 };
 
+const cambiarScroll = numero => {
+  return dispatch => {
+    dispatch(scroll(numero));
+  };
+};
+
+const scroll = numero => {
+  return {
+    type: ActionTypes.SCROLL_CATEGORIA_VENDEDOR,
+    scroll: numero
+  };
+};
+
+const modificarPropsCategoria = (categoriaVieja, categoriaNueva) => {
+  return dispatch => {
+    dispatch(modificarPropsCategoria2( categoriaVieja, categoriaNueva));
+  };
+};
+
+const modificarPropsCategoria2 = (categoriaVieja, categoriaNueva) => {
+  return {
+    type: ActionTypes.MODIFICAR_CATEGORIA_VENDEDOR,
+    categoriaVieja: categoriaVieja,
+    categoriaNueva: categoriaNueva
+  }
+}
+
+const agregarCategoria = (newCategoria) => {
+  return dispatch => {
+    dispatch(agregarCategoria2(newCategoria));
+  }
+}
+
+const agregarCategoria2 = (newCategoria) => {
+  return {
+    type: ActionTypes.AGREGAR_CATEGORIA_VENDEDOR,
+    categoriaNueva: newCategoria
+  };
+};
+
+const quitarCategoria = (categoria) => {
+  return dispatch => {
+    dispatch(quitarCategoria2(categoria));
+  }
+}
+
+const quitarCategoria2 = (categoria) => {
+  return {
+    type: ActionTypes.QUITAR_CATEGORIA_VENDEDOR,
+    categoriaQuitar: categoria
+  };
+};
+
+const actualizarCategorias = newCategorias => {
+  return dispatch => {
+    dispatch(categorias(newCategorias));
+  };
+};
+
+const categorias = newCategorias => {
+  return {
+    type: ActionTypes.ACTUALIZAR_CATEGORIAS_VENDEDOR,
+    categorias: newCategorias
+  };
+};
+
 const catalogoHasError = bool => {
   return {
     type: ActionTypes.CATALOGO_HAS_ERROR,
@@ -34,7 +94,21 @@ const catalogoHasError = bool => {
 const catalogoIsLoading = bool => {
   return {
     type: ActionTypes.CATALOGO_IS_LOADING,
-    isLoading: bool
+    isLoadingCategoria: bool
+  };
+};
+
+const categoriasHasError = bool => {
+  return {
+    type: ActionTypes.CATEGORIA_HAS_ERROR,
+    hasError: bool
+  };
+};
+
+const categoriasIsLoading = bool => {
+  return {
+    type: ActionTypes.CATEGORIA_IS_LOADING,
+    isLoadingCategoria: bool
   };
 };
 
@@ -101,6 +175,13 @@ const goPrincipal = () => {
   };
 };
 
+const goGestionarCategoriasCatalogo = () => {
+  Actions.CategoriasYCatalogo();
+  return {
+    type: ActionTypes.CATALOGO_CATEGORIAS_CATALOGO
+  };
+};
+
 const volverCatalogos = (coordenadaListView, categoriaSeleccionada) => {
   AsyncStorage.setItem(
     "filaInicioCatalogoVendedorFinal",
@@ -126,6 +207,83 @@ const volverCatalogos = (coordenadaListView, categoriaSeleccionada) => {
   return {
     type: ActionTypes.CATALOGO
   };
+};
+
+const modificarCategoria = (categoriaVieja, categoriaNueva, nombreUsuario) => {
+
+  return dispatch => {
+
+    dispatch(categoriasIsLoading(true));
+
+    // Campos vacios
+    if (!categoriaNueva) {
+      Alert.alert("Aviso", "Debes introducir el nombre de la categoria.");
+  
+      // Estado de error en el login
+      dispatch(categoriasHasError(true));
+      // Se cancela el estado de envío
+      dispatch(categoriasIsLoading(false));
+  
+      return;
+    }
+    else if (categoriaNueva.length < 3)
+    {
+      Alert.alert("Aviso", "Debes introducir un nombre de categoria de al menos 3 digitos.");
+  
+      // Estado de error en el login
+      dispatch(categoriasHasError(true));
+      // Se cancela el estado de envío
+      dispatch(categoriasIsLoading(false));
+  
+      return;
+    }
+    else if(categoriaNueva.includes(",,,"))
+    {
+      Alert.alert("Aviso", "Por favor puto troll, introduce un nombre correcto.");
+  
+      // Estado de error en el login
+      dispatch(categoriasHasError(true));
+      // Se cancela el estado de envío
+      dispatch(categoriasIsLoading(false));
+  
+      return;
+    }
+
+    fetch("https://thegreenways.es/modificarCategoriaComercio.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ 
+        categoriaVieja: categoriaVieja,
+        categoriaNueva: categoriaNueva,
+        nombreUsuario: nombreUsuario
+      })
+    })
+      .then(res => res.json())
+      .then(responseJson => {
+        
+        dispatch(categoriasIsLoading(false));
+
+        if(!isNaN(responseJson))
+        {
+          dispatch(modificarPropsCategoria(categoriaVieja,categoriaNueva));
+          dispatch(desplegarModificarComercio(""));
+          dispatch(cambiarScroll(responseJson));
+        }
+        else if (responseJson === "categoriaExiste")
+        {
+          Alert.alert("Aviso", "Ya existe una categoria con ese nombre.");
+        }
+        else{
+          Alert.alert("Aviso", responseJson);
+        }
+      })
+      .catch(e => {
+        dispatch(categoriasHasError(true));
+      });      
+  }
 };
 
 function modificarPagProducto() {
@@ -332,11 +490,170 @@ const eliminarProductoPagProducto = (
     });
 };
 
+const desplegarModificarComercio = categoriaCatalogo =>{
+
+  return {
+    type: ActionTypes.CATEGORIA_CATEGORIA_CATALOGO,
+    categoriaCatalogo: categoriaCatalogo
+  };
+
+};
+
+
+const guardarCategoria = (categoria, nombreUsuario) => {
+
+  return dispatch => {
+
+    dispatch(categoriasIsLoading(true));
+
+    // Campos vacios
+    if (!categoria) {
+      Alert.alert("Aviso", "Debes introducir el nombre de la categoria.");
+  
+      // Estado de error en el login
+      dispatch(categoriasHasError(true));
+      // Se cancela el estado de envío
+      dispatch(categoriasIsLoading(false));
+  
+      return;
+    }
+    else if (categoria.length < 3)
+    {
+      Alert.alert("Aviso", "Debes introducir un nombre de categoria de al menos 3 digitos.");
+  
+      // Estado de error en el login
+      dispatch(categoriasHasError(true));
+      // Se cancela el estado de envío
+      dispatch(categoriasIsLoading(false));
+  
+      return;
+    }
+    else if(categoria.includes(",,,"))
+    {
+      Alert.alert("Aviso", "Por favor puto troll, introduce un nombre correcto.");
+  
+      // Estado de error en el login
+      dispatch(categoriasHasError(true));
+      // Se cancela el estado de envío
+      dispatch(categoriasIsLoading(false));
+  
+      return;
+    }
+
+    fetch("https://thegreenways.es/guardarCategoriaComercio.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ 
+        categoria: categoria,
+        nombreUsuario: nombreUsuario
+      })
+    })
+      .then(res => res.json())
+      .then(responseJson => {
+
+        dispatch(categoriasIsLoading(false));
+
+        if(!isNaN(responseJson))
+        {
+          // Actions.refresh({ key: Math.random() });
+
+          dispatch(agregarCategoria(categoria));
+          dispatch(cambiarScroll(responseJson));
+        }
+        else if (responseJson === "categoriaExiste")
+        {
+          Alert.alert("Aviso", "Ya existe una categoria con ese nombre.");
+        }
+        else
+        {
+          Alert.alert("Aviso", responseJson);
+        }
+
+
+      })
+      .catch(e => {
+        //     console.warn(e);
+        dispatch(categoriasHasError(true));
+      });      
+  }
+};
+
+const mensajeEliminarCategoria = (
+  categoria,
+  nombreUsuario,
+) => {
+
+  return dispatch => {
+
+    Alert.alert(
+      "Aviso",
+      "¿Deseas eliminar la categoria " + categoria + "? (Todos los productos de esta categoria serán eliminados)",
+      [
+        {
+          text: "Sí",
+          onPress: () => {
+
+          dispatch(categoriasIsLoading(true));
+          
+          fetch("https://thegreenways.es/eliminarCategoriaComercio.php", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              categoria: categoria,
+              nombreUsuario: nombreUsuario
+            })
+          })
+            .then(res => res.json())
+            .then(responseJson => {
+        
+              dispatch(categoriasIsLoading(false));
+        
+                if(!isNaN(responseJson))
+                {      
+                  dispatch(quitarCategoria(categoria));
+                  dispatch(cambiarScroll(responseJson));
+                }
+                else
+                {
+                  Alert.alert("Aviso", responseJson);
+                }
+            })
+            .catch(e => {
+              console.warn(e);
+            })
+          }
+        },
+        { text: "No", onPress: () => null }
+      ],
+      { cancelable: false }
+    );
+    return {
+      type: ActionTypes.CATALOGO
+    };
+
+  }
+};
+
+
+
 export default {
+  actualizarCategorias,
+  agregarCategoria,
+  modificarCategoria,
+  guardarCategoria,
   cambiarCategoria,
+  cambiarScroll,
   categoria,
   catalogoHasError,
   catalogoIsLoading,
+  categoriasHasError,
+  categoriasIsLoading,
   goInsertar,
   goEliminar,
   goCatalogo,
@@ -344,8 +661,11 @@ export default {
   goCatalogoDetalles,
   mensajeEliminar,
   mensajeEliminarPagProducto,
-  modificarPagProducto,
+  desplegarModificarComercio,
   modificarDetalle,
+  modificarPagProducto,
   modificar,
-  volverCatalogos
+  volverCatalogos,
+  goGestionarCategoriasCatalogo,
+  mensajeEliminarCategoria
 };
