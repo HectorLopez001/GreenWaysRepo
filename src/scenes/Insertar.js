@@ -24,17 +24,6 @@ import RadioButton from "radio-button-react-native";
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
-const DEMO_OPTIONS_2 = [
-  "ACEITES Y CONDIMENTOS",
-  "APERITIVOS",
-  "ARROCES Y LEGUMBRES",
-  "BEBIDAS",
-  "CEREALES Y SEMILLAS",
-  "CONSERVAS",
-  "DESAYUNO Y MERIENDA",
-  "CEREALES Y SEMILLAS",
-  "PASTAS, SOPAS, CREMAS Y HARINAS"
-];
 
 const options = {
   title: "Selecciona una imagen (imagen vertical con el producto centrado)",
@@ -82,7 +71,8 @@ class Insertar extends Component {
       imageSource: null,
       data: null,
       categoriaVendedorSeleccionada: null,
-      isStorageLoaded: false
+      isStorageLoaded: false,
+      categorias: null
     };
   }
 
@@ -97,10 +87,35 @@ class Insertar extends Component {
     );
 
     await AsyncStorage.getItem("catalogo").then(value =>
-      this.setState({ catalogo: value, isStorageLoaded: true })
+      this.setState({ catalogo: value })
     );
 
-    //alert(this.state.categoriaVendedorSeleccionada);
+    return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username: this.state.username })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson !== "No Results Found") {
+
+          this.setState({
+            categorias: responseJson[0].categoriasComercio,
+            isStorageLoaded: true
+          });
+
+        }
+        else{
+
+          this.setState({
+            isStorageLoaded: true
+          });
+
+        }
+      })
   }
 
   listaDesplegable(index, value) {
@@ -340,7 +355,7 @@ class Insertar extends Component {
                   }}
                   textStyle={styles.dropdown_2_text}
                   dropdownStyle={styles.dropdown_2_dropdown}
-                  options={DEMO_OPTIONS_2}
+                  options={this.state.categorias.split(",,,").sort()}
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(
@@ -559,7 +574,7 @@ class Insertar extends Component {
                   style={styles.dropdown_2}
                   textStyle={styles.dropdown_2_text}
                   dropdownStyle={styles.dropdown_2_dropdown}
-                  options={DEMO_OPTIONS_2}
+                  options={this.state.categorias.split(",,,").sort()}
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(

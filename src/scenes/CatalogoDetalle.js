@@ -22,18 +22,6 @@ import { Actions } from "react-native-router-flux";
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
-const DEMO_OPTIONS_2 = [
-  "TODO",
-  "ACEITES Y CONDIMENTOS",
-  "APERITIVOS",
-  "ARROCES Y LEGUMBRES",
-  "BEBIDAS",
-  "CEREALES Y SEMILLAS",
-  "CONSERVAS",
-  "DESAYUNO Y MERIENDA",
-  "CEREALES Y SEMILLAS",
-  "PASTAS, SOPAS, CREMAS Y HARINAS" 
-];
 
 class CatalogoDetalle extends Component {
   static navigationOptions = {
@@ -70,7 +58,8 @@ class CatalogoDetalle extends Component {
       coordenadaListView: null,
       datas: null,
       isStorageLoaded: false,   
-      productosYaImportados: false   
+      productosYaImportados: false,
+      categorias: null
     };
   }
 
@@ -102,6 +91,21 @@ class CatalogoDetalle extends Component {
         this.setState({
           coordenadaListView: value
         });
+      }
+    );
+
+    await AsyncStorage.getItem("categoriasComercio").then(
+      value => {
+        if(value !== null)
+        {
+          this.setState({
+            categorias: value
+          },
+          function(){
+          // alert(value)
+            this.removeItemValue("categoriasComercio");
+          });
+        }
       }
     );
 
@@ -152,88 +156,111 @@ class CatalogoDetalle extends Component {
 
       //  AsyncStorage.setItem("categoriaVendedorSeleccionadaFinal", "TODO");
     }
-    else{
-    //SI VENIMOS DESDE LA PANTALLA DE INSERTAR/MODIFICAR
-    fetch("https://thegreenways.es/listaProductosVendedor.php", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ nombreUsuario: this.state.nombreUsuario })
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        if (responseJson === "No Results Found") {
-
-          if (this.state.coordenadaListView === 0)
-          {
-              this.setState({
-                coordenadaListView: 1
-              })
-          }
-
-          this.setState(
-          {
-            isStorageLoaded: true
-          },
-          function() {}
-          );
-        } else {
-          this.setState({
-            datas: responseJson,
-          })
-
-          //Evitamos "Index Out of Range"
-          if (this.state.coordenadaListView === 0) {
+    else
+    {
+      return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: this.state.nombreUsuario })
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson !== "No Results Found") {
             this.setState({
-              coordenadaListView: 1
+              categorias: responseJson[0].categoriasComercio
+            });
+
+          //SI VENIMOS DESDE LA PANTALLA DE INSERTAR/MODIFICAR
+          fetch("https://thegreenways.es/listaProductosVendedor.php", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nombreUsuario: this.state.nombreUsuario })
+          })
+            .then(response => response.json())
+            .then(responseJson => {
+              if (responseJson === "No Results Found") {
+
+                if (this.state.coordenadaListView === 0)
+                {
+                    this.setState({
+                      coordenadaListView: 1
+                    })
+                }
+
+                this.setState(
+                {
+                  isStorageLoaded: true
+                },
+                function() {}
+                );
+              } else {
+                this.setState({
+                  datas: responseJson,
+                })
+
+                //Evitamos "Index Out of Range"
+                if (this.state.coordenadaListView === 0) {
+                  this.setState({
+                    coordenadaListView: 1
+                  });
+                }
+
+                if (this.state.coordenadaListView >= 2)
+                {
+                  this.setState({
+                      isStorageLoaded: true
+                    },
+                    function() {
+                      setTimeout(() => {
+                        // if (this.state.datas != null) {
+                          this.refs.listViewa.scrollToIndex({
+                            animated: true,
+                            index: parseInt(this.state.coordenadaListView) - 1
+                          });
+                      //  }
+                      }, 50);
+
+                      //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
+                      AsyncStorage.setItem(
+                        "filaInicioCatalogoVendedorFinal",
+                        (0).toString()
+                      );
+                    }
+                  );
+                } else {
+                  this.setState(
+                    {
+                      isStorageLoaded: true
+                    },
+                    function() {
+                      //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
+                      AsyncStorage.setItem(
+                        "filaInicioCatalogoVendedorFinal",
+                        (0).toString()
+                      );
+                    }
+                  );
+                }
+              }
+              //Reseteamos
+              AsyncStorage.setItem("categoriaVendedorSeleccionadaFinal", "TODO");
+            })
+            .catch(error => {
+              console.error(error);
             });
           }
-
-          if (this.state.coordenadaListView >= 2)
-          {
+          else{
             this.setState({
-                isStorageLoaded: true
-              },
-              function() {
-                setTimeout(() => {
-                  // if (this.state.datas != null) {
-                    this.refs.listViewa.scrollToIndex({
-                      animated: true,
-                      index: parseInt(this.state.coordenadaListView) - 1
-                    });
-                //  }
-                }, 50);
-
-                //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
-                AsyncStorage.setItem(
-                  "filaInicioCatalogoVendedorFinal",
-                  (0).toString()
-                );
-              }
-            );
-          } else {
-            this.setState(
-              {
-                isStorageLoaded: true
-              },
-              function() {
-                //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
-                AsyncStorage.setItem(
-                  "filaInicioCatalogoVendedorFinal",
-                  (0).toString()
-                );
-              }
-            );
+              isStorageLoaded: true
+            });
           }
-        }
-        //Reseteamos
-        AsyncStorage.setItem("categoriaVendedorSeleccionadaFinal", "TODO");
-      })
-      .catch(error => {
-        console.error(error);
-      });
+        })
     }
   }
 
@@ -342,7 +369,7 @@ class CatalogoDetalle extends Component {
                    style={styles.dropdown_2}
                    textStyle={styles.dropdown_2_text}
                    dropdownStyle={styles.dropdown_2_dropdown}
-                   options={DEMO_OPTIONS_2}
+                   options={["TODO"].concat(this.state.categorias.split(",,,").sort())}
                    renderRow={this._dropdown_2_renderRow.bind(this)}
                    renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(
@@ -550,7 +577,8 @@ class CatalogoDetalle extends Component {
                   onPress={() => {
                     this.props.goCatalogo(
                       categoria,
-                      this.state.datas
+                      this.state.datas,
+                      this.state.categorias
                       );
                   }}
                 >
@@ -666,7 +694,7 @@ class CatalogoDetalle extends Component {
   }
 
   _dropdown_2_renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    if (rowID === DEMO_OPTIONS_2.length - 1) return;
+    if (rowID === this.state.categorias.split(",,,").length - 1) return;
     let key = `spr_${rowID}`;
     return <View style={styles.dropdown_2_separator} key={key} />;
   }
@@ -686,8 +714,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(CatalogoActions.goInsertar(categoriaSeleccionada)),
     goGestionarCategoriasCatalogo: () =>
       dispatch(CatalogoActions.goGestionarCategoriasCatalogo()),
-    goCatalogo: (categoriaSeleccionada, productos) =>
-      dispatch(CatalogoActions.goCatalogo(categoriaSeleccionada, productos)),
+    goCatalogo: (categoriaSeleccionada, productos, categorias) =>
+      dispatch(CatalogoActions.goCatalogo(categoriaSeleccionada, productos, categorias)),
     cambiarCategoria: stringCategoria =>
       dispatch(CatalogoActions.cambiarCategoria(stringCategoria)),
     mensajeEliminar: (

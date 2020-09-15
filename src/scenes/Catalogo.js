@@ -21,18 +21,6 @@ import { Actions } from "react-native-router-flux";
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
-const DEMO_OPTIONS_2 = [
-   "TODO",
-   "ACEITES Y CONDIMENTOS",
-   "APERITIVOS",
-   "ARROCES Y LEGUMBRES",
-   "BEBIDAS",
-   "CEREALES Y SEMILLAS",
-   "CONSERVAS",
-   "DESAYUNO Y MERIENDA",
-   "CEREALES Y SEMILLAS",
-   "PASTAS, SOPAS, CREMAS Y HARINAS"
-];
 
 class Catalogo extends Component {
   static navigationOptions = {
@@ -69,7 +57,8 @@ class Catalogo extends Component {
       coordenadaListView: null,
       datas: null,
       isStorageLoaded: false,
-      productosYaImportados: false
+      productosYaImportados: false,
+      categorias: null
     };
   }
 
@@ -101,6 +90,21 @@ class Catalogo extends Component {
         this.setState({
           coordenadaListView: value
         });
+      }
+    );
+
+    await AsyncStorage.getItem("categoriasComercio").then(
+      value => {
+        if(value !== null)
+        {
+          this.setState({
+            categorias: value
+          },
+          function(){
+          // alert(value)
+            this.removeItemValue("categoriasComercio");
+          });
+        }
       }
     );
 
@@ -150,80 +154,103 @@ class Catalogo extends Component {
     }
     else {
       //SI ABRIMOS EL CATALOGO LA 1º VEZ O VENIMOS DESDE LA PANTALLA DE INSERTAR/MODIFICAR
-      return fetch("https://thegreenways.es/listaProductosVendedor.php", {
+      return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ nombreUsuario: this.state.nombreUsuario })
+        body: JSON.stringify({ username: this.state.nombreUsuario })
       })
         .then(response => response.json())
         .then(responseJson => {
-          if (responseJson == "No Results Found") {
-  
-            if (this.state.coordenadaListView === 0)
-            {
-              this.setState({
-                  coordenadaListView: 1
-                })
-            }
-  
+          if (responseJson !== "No Results Found") {
+
             this.setState({
-                isStorageLoaded: true
-              });
-          } else {
-            this.setState({
-              datas: responseJson,
+              categorias: responseJson[0].categoriasComercio
+            });
+            
+            fetch("https://thegreenways.es/listaProductosVendedor.php", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ nombreUsuario: this.state.nombreUsuario })
             })
-            //Evitamos "Index Out of Range"
-            if (this.state.coordenadaListView === 0 || this.state.coordenadaListView === 1)
-            {
-              this.setState({
-                coordenadaListView: 2
-              });
-            }
-  
-            if (this.state.coordenadaListView >= 3)
-            {
-                this.setState({
-                  isStorageLoaded: true
-                },
-                function() {
-                  setTimeout(() => {
-                    this.refs.listViewa.scrollToIndex({
-                      animated: true,
-                      index: parseInt(this.state.coordenadaListView) - 2
+              .then(response => response.json())
+              .then(responseJson => {
+                if (responseJson == "No Results Found") {
+        
+                  if (this.state.coordenadaListView === 0)
+                  {
+                    this.setState({
+                        coordenadaListView: 1
+                      })
+                  }
+        
+                  this.setState({
+                      isStorageLoaded: true
                     });
-                  }, 50);
-  
-                  //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
-                  AsyncStorage.setItem(
-                    "filaInicioCatalogoVendedorFinal",
-                    (0).toString()
-                  );
+                } else {
+                  this.setState({
+                    datas: responseJson
+                  })
+                  //Evitamos "Index Out of Range"
+                  if (this.state.coordenadaListView === 0 || this.state.coordenadaListView === 1)
+                  {
+                    this.setState({
+                      coordenadaListView: 2
+                    });
+                  }
+        
+                  if (this.state.coordenadaListView >= 3)
+                  {
+                      this.setState({
+                        isStorageLoaded: true
+                      },
+                      function() {
+                        setTimeout(() => {
+                          this.refs.listViewa.scrollToIndex({
+                            animated: true,
+                            index: parseInt(this.state.coordenadaListView) - 2
+                          });
+                        }, 50);
+        
+                        //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
+                        AsyncStorage.setItem(
+                          "filaInicioCatalogoVendedorFinal",
+                          (0).toString()
+                        );
+                      }
+                    );
+                  } else {
+                    this.setState(
+                      {
+                        isStorageLoaded: true
+                      },
+                      function() {
+                        //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
+                        AsyncStorage.setItem(
+                          "filaInicioCatalogoVendedorFinal",
+                          (0).toString()
+                        );
+                      }
+                    );
+                  }
                 }
-              );
-            } else {
-              this.setState(
-                {
-                  isStorageLoaded: true
-                },
-                function() {
-                  //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
-                  AsyncStorage.setItem(
-                    "filaInicioCatalogoVendedorFinal",
-                    (0).toString()
-                  );
-                }
-              );
-            }
+                AsyncStorage.setItem("categoriaVendedorSeleccionadaFinal", "TODO");
+              })
+              .catch(error => {
+                console.error(error);
+              });
           }
-          AsyncStorage.setItem("categoriaVendedorSeleccionadaFinal", "TODO");
+          else{
+            this.setState({
+              isStorageLoaded: true
+            });
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
     }
   }
 
@@ -330,7 +357,7 @@ class Catalogo extends Component {
                   style={styles.dropdown_2}
                   textStyle={styles.dropdown_2_text}
                   dropdownStyle={styles.dropdown_2_dropdown}
-                  options={DEMO_OPTIONS_2}
+                  options={["TODO"].concat(this.state.categorias.split(",,,").sort())}
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(
@@ -519,7 +546,8 @@ class Catalogo extends Component {
                   onPress={() => {
                     this.props.goCatalogoDetalles(
                       categoria,
-                      this.state.datas
+                      this.state.datas,
+                      this.state.categorias
                     );
                   }}
                 >
@@ -635,7 +663,7 @@ class Catalogo extends Component {
   }
 
   _dropdown_2_renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    if (rowID === DEMO_OPTIONS_2.length - 1) return;
+    if (rowID === this.state.categorias.split(",,,").length - 1) return;
     let key = `spr_${rowID}`;
     return <View style={styles.dropdown_2_separator} key={key} />;
   }
@@ -652,8 +680,8 @@ const mapDispatchToProps = dispatch => {
     goInsertar: categoria =>
       dispatch(CatalogoActions.goInsertar(categoria)),
     goGestionarCategoriasCatalogo: () => dispatch(CatalogoActions.goGestionarCategoriasCatalogo()),
-    goCatalogoDetalles: (categoria, productos) =>
-      dispatch(CatalogoActions.goCatalogoDetalles(categoria, productos)),
+    goCatalogoDetalles: (categoria, productos, categorias) =>
+      dispatch(CatalogoActions.goCatalogoDetalles(categoria, productos, categorias)),
     cambiarCategoria: stringCategoria =>
       dispatch(CatalogoActions.cambiarCategoria(stringCategoria)),
     mensajeEliminar: (

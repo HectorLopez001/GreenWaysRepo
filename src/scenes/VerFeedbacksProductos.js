@@ -19,21 +19,9 @@ import {
 import MainVendedorActions from "./../actions/MainVendedor";
 import Loader from "./../components/Loader";
 
-const DEMO_OPTIONS_2 = [
-  "TODO",
-  "ACEITES Y CONDIMENTOS",
-  "APERITIVOS",
-  "ARROCES Y LEGUMBRES",
-  "BEBIDAS",
-  "CEREALES Y SEMILLAS",
-  "CONSERVAS",
-  "DESAYUNO Y MERIENDA",
-  "CEREALES Y SEMILLAS",
-  "PASTAS, SOPAS, CREMAS Y HARINAS"
-];
-
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
+
 
 class VerFeedbacksProductos extends Component {
   static navigationOptions = {
@@ -69,7 +57,8 @@ class VerFeedbacksProductos extends Component {
       datas: null,
       datas2: null,
       notaMedia: null,
-      isStorageLoaded: false
+      isStorageLoaded: false,
+      categorias: null
     };
   }
 
@@ -87,141 +76,159 @@ class VerFeedbacksProductos extends Component {
       }
     });
 
-    return fetch(
-      "https://thegreenways.es/listaFeedbacksProductosComerciante.php",
-      {
+    return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          nombreUsuario: this.state.nombreUsuario
-        })
-      }
-    )
-      .then(response => response.json())
-      .then(responseJson => {
-        if (responseJson == "No Results Found") {
-          // this.setState({
-          //    // notaMedia: 0,
-          //   //  isStorageLoaded: true
-          //   });
+        body: JSON.stringify({ username: this.state.nombreUsuario })
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson !== "No Results Found") {
+            this.setState({
+              categorias: responseJson[0].categoriasComercio
+            });
 
-            return fetch(
-              "https://thegreenways.es/listaProductosRevisadosFeedbacksVendedor.php",
-              {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  nombreUsuario: this.state.nombreUsuario
-                })
-              }
-            )
-              .then(response => response.json())
-              .then(responseJson2 => {
-
-                this.setState(
-                  {
-                    datas2: responseJson2,
-                    isStorageLoaded: true
-                  }
-                ); 
-
-              })
-        } else {
-
-          // Creamos un nuevo array con las valoraciones obtenidas. En este nuevo array, NO existe mas de un feedback para un mismo producto ya que lo que queremos 
-          // es calcular la nota media para cada producto.
-
-          //Necesitamos estos arrays intermedios (auxiliares)
-          let datasProcesado = [];
-          let totalAcumulado = [];
-          let contador = [];
-          let categorias = [];
-
-          for (let [key, value] of Object.entries(responseJson)) {
-
-            if(datasProcesado[value.nombreProducto] !== undefined)
-            {              
-              contador[value.nombreProducto] += 1;
-              totalAcumulado[value.nombreProducto] +=  parseFloat(value.nota);
-              datasProcesado[value.nombreProducto] = totalAcumulado[value.nombreProducto]/parseFloat(contador[value.nombreProducto]);        
-            }
-            else{
-              contador[value.nombreProducto] = 1;
-              datasProcesado[value.nombreProducto] = parseFloat(value.nota);
-              totalAcumulado[value.nombreProducto] = parseFloat(value.nota);
-              categorias[value.nombreProducto] = value.categoriaProducto;
-            }
-          }
-
-          let datasNuevo = [];
-          let contador2 = 0
-
-          for(entrada in datasProcesado)
+        return fetch(
+          "https://thegreenways.es/listaFeedbacksProductosComerciante.php",
           {
-            let nuevo = {
-              nombreProducto: entrada,
-              nota: datasProcesado[entrada],
-              categoriaProducto: categorias[entrada]
-            };
-
-            datasNuevo[contador2] = nuevo;
-            contador2 += 1;
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              nombreUsuario: this.state.nombreUsuario
+            })
           }
+        )
+          .then(response => response.json())
+          .then(responseJson => {
+            if (responseJson == "No Results Found") {
+              // this.setState({
+              //    // notaMedia: 0,
+              //   //  isStorageLoaded: true
+              //   });
 
-          this.setState(
-            {
-              datas: datasNuevo,
-          //    isStorageLoaded: true
-            }
-          );
-
-          return fetch(
-            "https://thegreenways.es/listaProductosRevisadosFeedbacksVendedor.php",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                nombreUsuario: this.state.nombreUsuario
-              })
-            }
-          )
-            .then(response => response.json())
-            .then(responseJson2 => {
-
-
-              for (let i=0 ; i<responseJson2.length ; i++)
-              {
-                for(let u=0 ; u<this.state.datas.length ; u++)
-                {
-                  if(responseJson2[i].nombreProducto === this.state.datas[u].nombreProducto)
+                return fetch(
+                  "https://thegreenways.es/listaProductosRevisadosFeedbacksVendedor.php",
                   {
-                    responseJson2.splice(i,1);
+                    method: "POST",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                      nombreUsuario: this.state.nombreUsuario
+                    })
                   }
+                )
+                  .then(response => response.json())
+                  .then(responseJson2 => {
+
+                    this.setState({
+                        datas2: responseJson2,
+                        isStorageLoaded: true
+                      }); 
+                  })
+            } else {
+
+              // Creamos un nuevo array con las valoraciones obtenidas. En este nuevo array, NO existe mas de un feedback para un mismo producto ya que lo que queremos 
+              // es calcular la nota media para cada producto.
+
+              //Necesitamos estos arrays intermedios (auxiliares)
+              let datasProcesado = [];
+              let totalAcumulado = [];
+              let contador = [];
+              let categorias = [];
+
+              for (let [key, value] of Object.entries(responseJson)) {
+
+                if(datasProcesado[value.nombreProducto] !== undefined)
+                {              
+                  contador[value.nombreProducto] += 1;
+                  totalAcumulado[value.nombreProducto] +=  parseFloat(value.nota);
+                  datasProcesado[value.nombreProducto] = totalAcumulado[value.nombreProducto]/parseFloat(contador[value.nombreProducto]);        
                 }
+                else{
+                  contador[value.nombreProducto] = 1;
+                  datasProcesado[value.nombreProducto] = parseFloat(value.nota);
+                  totalAcumulado[value.nombreProducto] = parseFloat(value.nota);
+                  categorias[value.nombreProducto] = value.categoriaProducto;
+                }
+              }
+
+              let datasNuevo = [];
+              let contador2 = 0
+
+              for(entrada in datasProcesado)
+              {
+                let nuevo = {
+                  nombreProducto: entrada,
+                  nota: datasProcesado[entrada],
+                  categoriaProducto: categorias[entrada]
+                };
+
+                datasNuevo[contador2] = nuevo;
+                contador2 += 1;
               }
 
               this.setState(
                 {
-                  datas2: responseJson2,
-                  isStorageLoaded: true
+                  datas: datasNuevo,
+              //    isStorageLoaded: true
                 }
               );
 
-            })
+              return fetch(
+                "https://thegreenways.es/listaProductosRevisadosFeedbacksVendedor.php",
+                {
+                  method: "POST",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                    nombreUsuario: this.state.nombreUsuario
+                  })
+                }
+              )
+                .then(response => response.json())
+                .then(responseJson2 => {
+
+
+                  for (let i=0 ; i<responseJson2.length ; i++)
+                  {
+                    for(let u=0 ; u<this.state.datas.length ; u++)
+                    {
+                      if(responseJson2[i].nombreProducto === this.state.datas[u].nombreProducto)
+                      {
+                        responseJson2.splice(i,1);
+                      }
+                    }
+                  }
+
+                  this.setState(
+                    {
+                      datas2: responseJson2,
+                      isStorageLoaded: true
+                    }
+                  );
+                })
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
         }
-      })
-      .catch(error => {
-        console.error(error);
-      });
+        else{
+          this.setState({
+            isStorageLoaded: true
+          });
+        }
+  })
   }
 
 
@@ -264,7 +271,7 @@ class VerFeedbacksProductos extends Component {
   }
   
   _dropdown_2_renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    if (rowID === DEMO_OPTIONS_2.length - 1) return;
+    if (rowID === this.state.categorias.split(",,,").length - 1) return;
     let key = `spr_${rowID}`;
     return <View style={styles.dropdown_2_separator} key={key} />;
   }
@@ -372,7 +379,7 @@ class VerFeedbacksProductos extends Component {
                   style={styles.dropdown_2}
                   textStyle={styles.dropdown_2_text}
                   dropdownStyle={styles.dropdown_2_dropdown}
-                  options={DEMO_OPTIONS_2}
+                  options={["TODO"].concat(this.state.categorias.split(",,,").sort())}
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(

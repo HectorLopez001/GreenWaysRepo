@@ -20,18 +20,7 @@ import Loader from "./../components/Loader";
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
-const DEMO_OPTIONS_2 = [
-  "TODO",
-  "ACEITES Y CONDIMENTOS",
-  "APERITIVOS",
-  "ARROCES Y LEGUMBRES",
-  "BEBIDAS",
-  "CEREALES Y SEMILLAS",
-  "CONSERVAS",
-  "DESAYUNO Y MERIENDA",
-  "CEREALES Y SEMILLAS",
-  "PASTAS, SOPAS, CREMAS Y HARINAS"
-];
+
 
 class CatalogoClientesFast extends Component {
   static navigationOptions = {
@@ -68,7 +57,8 @@ class CatalogoClientesFast extends Component {
       datas: null,
       sceneComerciosAnterior: null,
       isStorageLoaded: false,
-      productosYaImportados: false
+      productosYaImportados: false,
+      categorias: null
     };
   }
   GetItem(nombreProducto, categoria) {
@@ -104,6 +94,22 @@ class CatalogoClientesFast extends Component {
       });
     });
 
+
+    await AsyncStorage.getItem("categoriasComercioCliente").then(
+      value => {
+        if(value !== null)
+        {
+          this.setState({
+            categorias: value
+          },
+          function(){
+          // alert(value)
+            this.removeItemValue("categoriasComercioCliente");
+          });
+        }
+      }
+    );
+
     await AsyncStorage.getItem("productosComercioCliente").then(
       value => {
         if(value !== null)
@@ -127,7 +133,24 @@ class CatalogoClientesFast extends Component {
     }
     else{
 
-      return fetch("https://thegreenways.es/listaProductosRevisados.php", {
+      return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: this.state.nombreUsuario })
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson !== "No Results Found") {
+
+            this.setState({
+              categorias: responseJson[0].categoriasComercio
+            });
+            
+
+        fetch("https://thegreenways.es/listaProductosRevisados.php", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -154,6 +177,13 @@ class CatalogoClientesFast extends Component {
         .catch(error => {
           console.error(error);
         });
+      }
+        else{
+          this.setState({
+            isStorageLoaded: true
+          });
+        }
+      })
     }
   }
 
@@ -267,7 +297,8 @@ class CatalogoClientesFast extends Component {
                   style={styles.dropdown_2}
                   textStyle={styles.dropdown_2_text}
                   dropdownStyle={styles.dropdown_2_dropdown}
-                  options={DEMO_OPTIONS_2}
+                  //   options={DEMO_OPTIONS_2}
+                  options={["TODO"].concat(this.state.categorias.split(",,,").sort())}
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(
@@ -393,7 +424,8 @@ class CatalogoClientesFast extends Component {
                   onPress={() => {
                     this.props.goCatalogoClientes(
                       categoria,
-                      this.state.datas
+                      this.state.datas,
+                      this.state.categorias
                     );
                   }}
                 >
@@ -518,7 +550,7 @@ class CatalogoClientesFast extends Component {
   }
 
   _dropdown_2_renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    if (rowID === DEMO_OPTIONS_2.length - 1) return;
+    if (rowID === this.state.categorias.split(",,,").length - 1) return;
     let key = `spr_${rowID}`;
     return <View style={styles.dropdown_2_separator} key={key} />;
   }
@@ -534,9 +566,9 @@ const mapDispatchToProps = dispatch => {
   return {
     goPaginaComercio: () =>
       dispatch(CatalogoClientesActions.goPaginaComercio()),
-    goCatalogoClientes: (categoriaSeleccionada, productos) =>
+    goCatalogoClientes: (categoriaSeleccionada, productos, categorias) =>
       dispatch(
-        CatalogoClientesActions.goCatalogoCliente(categoriaSeleccionada, productos)
+        CatalogoClientesActions.goCatalogoCliente(categoriaSeleccionada, productos, categorias)
       ),
     cambiarCategoria: stringCategoria =>
       dispatch(CatalogoClientesActions.cambiarCategoria(stringCategoria))

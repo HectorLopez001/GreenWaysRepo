@@ -132,7 +132,7 @@ const goEliminar = () => {
   };
 };
 
-const goCatalogo = (categoriaSeleccionada, productos) => {
+const goCatalogo = (categoriaSeleccionada, productos, categorias) => {
   AsyncStorage.setItem(
     "categoriaVendedorSeleccionadaFinal",
     categoriaSeleccionada
@@ -141,6 +141,11 @@ const goCatalogo = (categoriaSeleccionada, productos) => {
   AsyncStorage.setItem(
     "productosComercio",
     JSON.stringify(productos)
+  );
+
+  AsyncStorage.setItem(
+    "categoriasComercio",
+    categorias
   );
 
   Actions.Catalogo();
@@ -149,7 +154,7 @@ const goCatalogo = (categoriaSeleccionada, productos) => {
   };
 };
 
-const goCatalogoDetalles = (categoriaSeleccionada, productos) => {
+const goCatalogoDetalles = (categoriaSeleccionada, productos, categorias) => {
   AsyncStorage.setItem(
     "categoriaVendedorSeleccionadaFinal",
     categoriaSeleccionada
@@ -158,6 +163,11 @@ const goCatalogoDetalles = (categoriaSeleccionada, productos) => {
   AsyncStorage.setItem(
     "productosComercio",
     JSON.stringify(productos)
+  );
+
+  AsyncStorage.setItem(
+    "categoriasComercio",
+    categorias
   );
 
  // alert(productos);

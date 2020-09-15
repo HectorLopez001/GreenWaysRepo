@@ -21,18 +21,7 @@ import Loader from "./../components/Loader";
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
-const DEMO_OPTIONS_2 = [
-  "TODO",
-  "ACEITES Y CONDIMENTOS",
-  "APERITIVOS",
-  "ARROCES Y LEGUMBRES",
-  "BEBIDAS",
-  "CEREALES Y SEMILLAS",
-  "CONSERVAS",
-  "DESAYUNO Y MERIENDA",
-  "CEREALES Y SEMILLAS",
-  "PASTAS, SOPAS, CREMAS Y HARINAS"
-];
+
 
 class CatalogoClientes extends Component {
   static navigationOptions = {
@@ -69,7 +58,8 @@ class CatalogoClientes extends Component {
       datas: null,
       sceneComerciosAnterior: null,
       isStorageLoaded: false,
-      productosYaImportados: false
+      productosYaImportados: false,
+      categorias: null
     };
   }
 
@@ -106,6 +96,20 @@ class CatalogoClientes extends Component {
       });
     });
 
+    await AsyncStorage.getItem("categoriasComercioCliente").then(
+      value => {
+        if(value !== null)
+        {
+          this.setState({
+            categorias: value
+          },
+          function(){
+          // alert(value)
+            this.removeItemValue("categoriasComercioCliente");
+          });
+        }
+      }
+    );
 
     await AsyncStorage.getItem("productosComercioCliente").then(
       value => {
@@ -134,33 +138,55 @@ class CatalogoClientes extends Component {
     }
     else{
 
-      return fetch("https://thegreenways.es/listaProductosRevisados.php", {
+      return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ nombreComercio: this.state.nombreComercio })
+        body: JSON.stringify({ username: this.state.nombreUsuario })
       })
         .then(response => response.json())
         .then(responseJson => {
-          if (responseJson === "No Results Found") {
-  
+          if (responseJson !== "No Results Found") {
             this.setState({
-                isStorageLoaded: true
-              });
-          } else {
-  
-            this.setState({
-                datas: responseJson,
-                isStorageLoaded: true
-              });
-          }  
-          AsyncStorage.setItem("categoriaCompradorSeleccionadaFinal", "TODO");
+              categorias: responseJson[0].categoriasComercio
+            });
+
+        fetch("https://thegreenways.es/listaProductosRevisados.php", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ nombreComercio: this.state.nombreComercio })
         })
-        .catch(error => {
-          console.error(error);
-        });      
+          .then(response => response.json())
+          .then(responseJson => {
+            if (responseJson === "No Results Found") {
+    
+              this.setState({
+                  isStorageLoaded: true
+                });
+            } else {
+    
+              this.setState({
+                  datas: responseJson,
+                  isStorageLoaded: true
+                });
+            }  
+            AsyncStorage.setItem("categoriaCompradorSeleccionadaFinal", "TODO");
+          })
+          .catch(error => {
+            console.error(error);
+          });      
+      }
+      else{
+        this.setState({
+          isStorageLoaded: true
+        });
+      }
+    })
     }
   }
 
@@ -274,7 +300,7 @@ class CatalogoClientes extends Component {
                   style={styles.dropdown_2}
                   textStyle={styles.dropdown_2_text}
                   dropdownStyle={styles.dropdown_2_dropdown}
-                  options={DEMO_OPTIONS_2}
+                  options={["TODO"].concat(this.state.categorias.split(",,,").sort())}
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(
@@ -416,7 +442,8 @@ class CatalogoClientes extends Component {
                   onPress={() => {
                     this.props.goCatalogoClientesFast(
                       categoria,
-                      this.state.datas
+                      this.state.datas,
+                      this.state.categorias
                     );
                   }}
                 >
@@ -541,7 +568,7 @@ class CatalogoClientes extends Component {
   }
 
   _dropdown_2_renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    if (rowID === DEMO_OPTIONS_2.length - 1) return;
+    if (rowID === this.state.categorias.split(",,,").length - 1) return;
     let key = `spr_${rowID}`;
     return <View style={styles.dropdown_2_separator} key={key} />;
   }
@@ -557,9 +584,9 @@ const mapDispatchToProps = dispatch => {
   return {
     goPaginaComercio: () =>
       dispatch(CatalogoClientesActions.goPaginaComercio()),
-    goCatalogoClientesFast: (categoria, productos) =>
+    goCatalogoClientesFast: (categoria, productos, categorias) =>
       dispatch(
-        CatalogoClientesActions.goCatalogoClienteFast(categoria, productos)
+        CatalogoClientesActions.goCatalogoClienteFast(categoria, productos, categorias)
       ),
     cambiarCategoria: stringCategoria =>
       dispatch(CatalogoClientesActions.cambiarCategoria(stringCategoria))

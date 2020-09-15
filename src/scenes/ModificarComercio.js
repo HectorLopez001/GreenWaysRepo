@@ -201,7 +201,7 @@ class ModificarComercio extends Component {
               longitude: parseFloat(responseJson[0].longitud),
               latitudeDelta: 0.003,
               longitudeDelta: 0.003
-            }), 100);
+            }), 1000);
           }
         );        
       })
@@ -210,22 +210,24 @@ class ModificarComercio extends Component {
       });
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevprops) {
 
-    let region = {
-      latitude: this.props.latitud,
-      longitude: this.props.longitud,
-      latitudeDelta: 0.003,
-      longitudeDelta: 0.003
-    };
-
-    this.props.cambiarLocalizacion(this.props.latitud, this.props.longitud);
-
-    if(this.props.latitud !== null)
+    if(prevprops !== this.props)
     {
-      setTimeout(() => this.map.animateToRegion(region), 100);
+      let region = {
+        latitude: this.props.latitud,
+        longitude: this.props.longitud,
+        latitudeDelta: 0.003,
+        longitudeDelta: 0.003
+      };
+  
+      this.props.cambiarLocalizacion(this.props.latitud, this.props.longitud);
+  
+      if(this.props.latitud !== null)
+      {
+        setTimeout(() => this.map.animateToRegion(region), 100);
+      }
     }
-
   }
 
   render() {
@@ -827,7 +829,7 @@ class ModificarComercio extends Component {
 
 const mapStateToProps = state => {
   return {
-    hasError: state.modificarComercio.hasError,
+  //  hasError: state.modificarComercio.hasError,
     isLoading: state.modificarComercio.isLoading,
     campoError: state.modificarComercio.campoError,
     latitud: state.modificarComercio.latitud,

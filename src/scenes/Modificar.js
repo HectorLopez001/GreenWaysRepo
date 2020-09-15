@@ -31,17 +31,7 @@ const options = {
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
-const DEMO_OPTIONS_2 = [
-   "ACEITES Y CONDIMENTOS",
-   "APERITIVOS",
-   "ARROCES Y LEGUMBRES",
-   "BEBIDAS",
-   "CEREALES Y SEMILLAS",
-   "CONSERVAS",
-   "DESAYUNO Y MERIENDA",
-   "CEREALES Y SEMILLAS",
-   "PASTAS, SOPAS, CREMAS Y HARINAS"
-];
+
 
 class Modificar extends Component {
   static navigationOptions = {
@@ -86,7 +76,8 @@ class Modificar extends Component {
       data: null,
       filaInicio: null,
       categoriaVendedorSeleccionada: null,
-      isStorageLoaded: false
+      isStorageLoaded: false,
+      categorias: null
     };
   }
 
@@ -227,72 +218,103 @@ class Modificar extends Component {
       this.setState({ nombre: value })
     );
 
-    return fetch("https://thegreenways.es/pagProducto.php", {
+
+    return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        nombreProducto: this.state.nombre,
-        username: this.state.username
-      })
+      body: JSON.stringify({ username: this.state.username })
     })
       .then(response => response.json())
       .then(responseJson => {
-        this.setState(
-          {
-            isStorageLoaded: true,
-            idProducto: responseJson[0].idProducto,
-            descripcion: responseJson[0].descripcionProducto,
-            categoria: responseJson[0].categoriaProducto,
-            precio: responseJson[0].precio,
-            idComercio: responseJson[0].idComercio,
-            imageSource: {
-              uri: "https://thegreenways.es/" + responseJson[0].imagenProducto
-            }
-          },
-          function() {
-            //ESTO ES PARA QUITARLE LA UNIDAD AL PRECIO Y ASIGNARLA AL ATRIBUTO "UNIDAD" PARA MARCAR DESPUES EN RENDER LOS RADIOBUTTONS
+        if (responseJson !== "No Results Found") {
 
-            if (
-              this.state.precio.substring(
-                this.state.precio.length - 2,
-                this.state.precio.length
-              ) == "ad"
-            ) {
-              this.setState({
-                unidad: this.state.precio.substring(
-                  this.state.precio.length - 9,
-                  this.state.precio.length
-                ),
-                precio: this.state.precio.substring(
-                  0,
-                  this.state.precio.length - 9
-                ),
-                value: 0
-              });
-            } else {
-              this.setState({
-                unidad: this.state.precio.substring(
-                  this.state.precio.length - 7,
-                  this.state.precio.length
-                ),
-                precio: this.state.precio.substring(
-                  0,
-                  this.state.precio.length - 7
-                ),
-                value: 1
-              });
-            }
+          this.setState({
+            categorias: responseJson[0].categoriasComercio
+          });
 
-            //   this.listaDesplegable("ja", this.state.categoria);
-          }
-        );
+
+          return fetch("https://thegreenways.es/pagProducto.php", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              nombreProducto: this.state.nombre,
+              username: this.state.username
+            })
+          })
+            .then(response => response.json())
+            .then(responseJson => {
+              this.setState(
+                {
+                  isStorageLoaded: true,
+                  idProducto: responseJson[0].idProducto,
+                  descripcion: responseJson[0].descripcionProducto,
+                  categoria: responseJson[0].categoriaProducto,
+                  precio: responseJson[0].precio,
+                  idComercio: responseJson[0].idComercio,
+                  imageSource: {
+                    uri: "https://thegreenways.es/" + responseJson[0].imagenProducto
+                  }
+                },
+                function() {
+                  //ESTO ES PARA QUITARLE LA UNIDAD AL PRECIO Y ASIGNARLA AL ATRIBUTO "UNIDAD" PARA MARCAR DESPUES EN RENDER LOS RADIOBUTTONS
+      
+                  if (
+                    this.state.precio.substring(
+                      this.state.precio.length - 2,
+                      this.state.precio.length
+                    ) == "ad"
+                  ) {
+                    this.setState({
+                      unidad: this.state.precio.substring(
+                        this.state.precio.length - 9,
+                        this.state.precio.length
+                      ),
+                      precio: this.state.precio.substring(
+                        0,
+                        this.state.precio.length - 9
+                      ),
+                      value: 0
+                    });
+                  } else {
+                    this.setState({
+                      unidad: this.state.precio.substring(
+                        this.state.precio.length - 7,
+                        this.state.precio.length
+                      ),
+                      precio: this.state.precio.substring(
+                        0,
+                        this.state.precio.length - 7
+                      ),
+                      value: 1
+                    });
+                  }
+      
+                  //   this.listaDesplegable("ja", this.state.categoria);
+                }
+              );
+            })
+            .catch(error => {
+              console.error(error);
+            });
+
+        }
+        else{
+
+          this.setState({
+            isStorageLoaded: true
+          });
+
+        }
       })
-      .catch(error => {
-        console.error(error);
-      });
+
+
+
   }
 
   listaDesplegable(index, value) {
@@ -456,7 +478,7 @@ class Modificar extends Component {
                   }}
                   textStyle={styles.dropdown_2_text}
                   dropdownStyle={styles.dropdown_2_dropdown}
-                  options={DEMO_OPTIONS_2}
+                  options={this.state.categorias.split(",,,").sort()}
                   // renderButtonText={rowData =>
                   //   this._dropdown_2_renderButtonText(rowData)
                   // }
@@ -716,7 +738,7 @@ class Modificar extends Component {
                   }}
                   textStyle={styles.dropdown_2_text}
                   dropdownStyle={styles.dropdown_2_dropdown}
-                  options={DEMO_OPTIONS_2}
+                  options={this.state.categorias.split(",,,").sort()}
                   // renderButtonText={rowData =>
                   //   this._dropdown_2_renderButtonText(rowData)
                   // }

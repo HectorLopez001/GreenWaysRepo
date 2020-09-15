@@ -4,7 +4,7 @@ import { Actions } from "react-native-router-flux";
 import { Alert } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 
-const goCatalogoCliente = (categoriaSeleccionada, productos) => {
+const goCatalogoCliente = (categoriaSeleccionada, productos, categorias) => {
   AsyncStorage.setItem(
     "categoriaCompradorSeleccionadaFinal",
     categoriaSeleccionada
@@ -13,6 +13,11 @@ const goCatalogoCliente = (categoriaSeleccionada, productos) => {
   AsyncStorage.setItem(
     "productosComercioCliente",
     JSON.stringify(productos)
+  );
+
+  AsyncStorage.setItem(
+    "categoriasComercio",
+    categorias
   );
 
   Actions.CatalogoClientes();
@@ -21,7 +26,7 @@ const goCatalogoCliente = (categoriaSeleccionada, productos) => {
   };
 };
 
-const goCatalogoClienteFast = (categoriaSeleccionada, productos) => {
+const goCatalogoClienteFast = (categoriaSeleccionada, productos, categorias) => {
   AsyncStorage.setItem(
     "categoriaCompradorSeleccionadaFinal",
     categoriaSeleccionada
@@ -30,6 +35,11 @@ const goCatalogoClienteFast = (categoriaSeleccionada, productos) => {
   AsyncStorage.setItem(
     "productosComercioCliente",
     JSON.stringify(productos)
+  );
+
+  AsyncStorage.setItem(
+    "categoriasComercio",
+    categorias
   );
 
   Actions.CatalogoClientesFast();
