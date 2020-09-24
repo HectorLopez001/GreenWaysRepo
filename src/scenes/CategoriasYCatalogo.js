@@ -10,18 +10,20 @@ import {
   Platform,
   Image,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  Alert
 } from "react-native";
 import LoginActions from "../actions/Login";
 import MainVendedorActions from "../actions/MainVendedor";
 import Loader from "../components/Loader";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const winWidth = Dimensions.get("window").width;
 const winHeight = Dimensions.get("window").height;
 
 class CategoriasYCatalogo extends Component {
   static navigationOptions = {
-    title: "Página Principal Comerciante",
+    title: "Categorías/Catálogo",
     headerRight: (
       <View>
         <TouchableOpacity
@@ -47,10 +49,45 @@ class CategoriasYCatalogo extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      username: null,
+      activarBotonCatalogo: false
+    }
+  }
+
+  async componentDidMount()
+  {
+
+    await AsyncStorage.getItem("name").then(value => {
+      this.setState({
+        username: value
+      });
+    });
+  
+    return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username: this.state.username })
+    })
+    .then(response => response.json())
+    .then(responseJson => {
+
+      if(responseJson[0].categoriasComercio !== null)
+      {
+        this.setState({
+          activarBotonCatalogo: true
+        });
+      }
+    })
   }
 
   render() {
     let { hasError, isLogged, isLoading } = this.props;
+    let {activarBotonCatalogo} = this.state
     return (
       <View style={styles.container}>
         <View style={styles.seccionPrincipal}>
@@ -92,7 +129,14 @@ class CategoriasYCatalogo extends Component {
           >
             <TouchableOpacity
               onPress={() => {
-                this.props.goCatalogo();
+                if(!activarBotonCatalogo)
+                {
+                  Alert.alert("Aviso", "Antes de introducir productos debes introducir alguna categoria para poder asignarla a tus productos.")
+                }
+                else
+                {
+                  this.props.goCatalogo();
+                }
               }}
             >
               <View
@@ -101,7 +145,7 @@ class CategoriasYCatalogo extends Component {
                   borderWidth: 1.5,
                   borderColor: "black",
                   borderRadius: 20,
-                  backgroundColor: "#79B700",
+                  backgroundColor: activarBotonCatalogo ? "#79B700" : "#778899",
                   marginLeft: "2%",
                   marginRight: "2%",
                   justifyContent: "center",
@@ -120,8 +164,8 @@ class CategoriasYCatalogo extends Component {
           }}
         >
           <TouchableOpacity
-            onPress={() => {
-              this.props.goPrincipal();
+            onPress={() => { 
+                this.props.goPrincipal();
             }}
           >
             <View

@@ -55,8 +55,6 @@ const goVerFeedbacksComercio = () => {
 
 const goVerFeedbacksProductos = () => {
 
-  AsyncStorage.removeItem("categoriaProductoFeedback");
-
   Actions.VerFeedbacksProductos();
   return {
     type: ActionTypes.VER_FEEDBACKS_PRODUCTOS

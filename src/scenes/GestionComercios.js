@@ -106,6 +106,8 @@ class GestionComercios extends Component {
                     hayCategorias: "no",
                     isStorageLoaded: true
                   });
+
+                //  alert(this.state.hayCatalogos);
               }
               else
               {
@@ -156,6 +158,8 @@ class GestionComercios extends Component {
                     numCategorias: auxNumCategorias,
                     isStorageLoaded: true
                   });
+
+                //  alert(this.state.hayCatalogos);
               }
             })
             .catch(error => {
@@ -190,6 +194,9 @@ class GestionComercios extends Component {
                     hayCategorias: "no",
                     isStorageLoaded: true
                   });
+
+                //  alert(this.state.hayCatalogos);
+
               }
               else
               {
@@ -239,6 +246,9 @@ class GestionComercios extends Component {
                     numCategorias: auxNumCategorias,
                     isStorageLoaded: true
                   });
+
+                //  alert(this.state.hayCatalogos);
+
               }
             })
             .catch(error => {

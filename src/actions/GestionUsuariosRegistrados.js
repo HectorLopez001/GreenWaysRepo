@@ -551,6 +551,12 @@ const clickado2 = idFeedback => {
   };
 };
 
+const resetearClicks = () => {
+  return {
+    type: ActionTypes.RESETEAR_NUMERO_CLICKS,
+  }
+};
+
 export default {
   goPrincipal,
   goGestionFeedbacks,
@@ -568,5 +574,6 @@ export default {
   feedbackRevisado,
   revisadosPerfilesUsuario,
   mensajeEliminar0bis,
-  volverInicio
+  volverInicio,
+  resetearClicks
 };

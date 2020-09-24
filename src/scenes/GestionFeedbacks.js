@@ -142,6 +142,7 @@ class GestionFeedbacks extends Component {
 
           //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
           AsyncStorage.setItem("filaInicioFeedbackFinal", (0).toString());
+          this.props.resetearClicks();          
         }        
       })
       .catch(error => {
@@ -499,7 +500,8 @@ const mapDispatchToProps = dispatch => {
     volverInicio: () =>
       dispatch(GestionUsuariosRegistradosActions.volverInicio()),
     volverGestionUsuariosRegistrados: () =>
-      dispatch(GestionUsuariosRegistradosActions.goGestionUsuariosRegistrados3())
+      dispatch(GestionUsuariosRegistradosActions.goGestionUsuariosRegistrados3()),
+    resetearClicks:() => dispatch(GestionUsuariosRegistradosActions.resetearClicks())
   };
 };
 

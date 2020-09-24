@@ -26,8 +26,15 @@ export default (state = initialState, action) => {
     */
 
     case ActionTypes.FILA_CLICKADA3:
+
       return { ...state,
         click: [...state.click, action.click]
+      };
+
+    case ActionTypes.RESETEAR_NUMERO_CLICKS:
+
+      return {...state,
+        click: []
       };
 
     /* case ActionTypes.NO_ERROR:

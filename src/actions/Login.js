@@ -131,8 +131,6 @@ const login = (username, password) => {
                 .then(res => res.json())
                 .then(responseJson => {
 
-                //  alert(responseJson);
-
                   if (responseJson == "tokenGuardado"){
 
                     dispatch(loginHasError(false));

@@ -89,38 +89,46 @@ const quitarCategoria2 = (categoria) => {
   };
 };
 
-const goGestionCategoriasBotonVolver = (numeroCategoriasRevisables, idComercio, nombreComercio) => {
+const goGestionCategoriasBotonVolver = (numeroCategoriasRevisables, idComercio, nombreComercio, clicsPantallaActual) => {
 
-  if(numeroCategoriasRevisables !== 0)
-  {
-    Alert.alert(
-      "Aviso",
-      "¿Has finalizado la revisión de todas las categorias?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel"
-        },
-        {
-          text: "Sí",
-          onPress: () => {
-            revisadasCategorias(idComercio, nombreComercio);
-            Actions.GestionCategorias();
-          }
-        },
-        {
-          text: "No",
-          onPress: () => {
-            Actions.GestionCategorias();
-          }
-        }
-      ],
-      { cancelable: false }
-    );
+
+  if(!clicsPantallaActual && numeroCategoriasRevisables === 0){
+    Actions.popTo("GestionCategorias");
   }
-  else{
-    Actions.GestionCategorias();
+  else
+  {
+    if(numeroCategoriasRevisables !== 0)
+    {
+      Alert.alert(
+        "Aviso",
+        "¿Has finalizado la revisión de todas las categorias?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel"
+          },
+          {
+            text: "Sí",
+            onPress: () => {
+              revisadasCategorias(idComercio, nombreComercio);
+              Actions.GestionCategorias();
+            }
+          },
+          {
+            text: "No",
+            onPress: () => {
+              Actions.popTo("GestionCategorias");
+             // Actions.GestionCategorias();
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+    }
+    else{
+      Actions.GestionCategorias();
+    }
   }
 
   return {
@@ -201,6 +209,18 @@ const actualizarNumeroCategoriasRevisables = (numero) => {
   }
 };
 
+
+const resetearClicksCategorias = () => {
+  return {
+    type: ActionTypes.RESETEAR_NUMERO_CLICKS_CATEGORIAS,
+  }
+};
+
+const resetearClicks = () => {
+  return {
+    type: ActionTypes.RESETEAR_NUMERO_CLICKS,
+  }
+}
 // const categoriasIsLoading = bool => {
 //   return {
 //     type: ActionTypes.CATEGORIAS_ADMIN_IS_LOADING,
@@ -374,76 +394,87 @@ const volverGestionCatalogoProductos = (
   coordenadaListView,
   clicsPantallaActual
 ) => {
-  fetch("https://thegreenways.es/comprobarCatalogoRevisado.php", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      nombreComercio: nombreComercio
+
+  if (clicsPantallaActual) {
+    fetch("https://thegreenways.es/comprobarCatalogoRevisado.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombreComercio: nombreComercio
+      })
     })
-  })
-    .then(response => response.json())
-    .then(responseJson => {
-      if (responseJson == "Revisado") {
-        revisadosProductos(nombreComercio, idComercio);
-        AsyncStorage.setItem("filaInicioFinal", coordenadaListView.toString());
-
-        Actions.GestionCatalogoProductos();
-      } else {
-        Alert.alert(
-          "Aviso",
-          "¿Has finalizado la revisión del comercio " + nombreComercio + "?",
-          [
-            {
-              text: "Cancel",
-              onPress: () => null,
-              style: "cancel"
-            },
-            {
-              text: "Sí",
-              onPress: () => {
-                revisadosProductos(nombreComercio, idComercio);
-                AsyncStorage.setItem(
-                  "filaInicioFinal",
-                  coordenadaListView.toString()
-                );
-                Actions.GestionCatalogoProductos();
-                //  filaClickada(nombreComercio);
-              }
-            },
-            {
-              text: "No",
-              onPress: () => {
-                AsyncStorage.setItem(
-                  "filaInicioFinal",
-                  coordenadaListView.toString()
-                );
-
-                if (clicsPantallaActual) {
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson == "Revisado") {
+          revisadosProductos(nombreComercio, idComercio);
+          AsyncStorage.setItem("filaInicioFinal", coordenadaListView.toString());
+  
+          Actions.GestionCatalogoProductos();
+        } else {
+          Alert.alert(
+            "Aviso",
+            "¿Has finalizado la revisión del comercio " + nombreComercio + "?",
+            [
+              {
+                text: "Cancel",
+                onPress: () => null,
+                style: "cancel"
+              },
+              {
+                text: "Sí",
+                onPress: () => {
+                  revisadosProductos(nombreComercio, idComercio);
+                  AsyncStorage.setItem(
+                    "filaInicioFinal",
+                    coordenadaListView.toString()
+                  );
                   Actions.GestionCatalogoProductos();
+                  //  filaClickada(nombreComercio);
                 }
-                else{
-                  Actions.popTo("GestionCatalogoProductos")
+              },
+              {
+                text: "No",
+                onPress: () => {
+                  AsyncStorage.setItem(
+                    "filaInicioFinal",
+                    coordenadaListView.toString()
+                  );
+  
+                  if (clicsPantallaActual) {
+                    Actions.GestionCatalogoProductos();
+                  }
+                  else{
+                    Actions.popTo("GestionCatalogoProductos")
+                  }
                 }
               }
-            }
-          ],
-          { cancelable: false }
-        );
-      }
-    })
-    .catch(error => {
-      console.error(error);
-    });
+            ],
+            { cancelable: false }
+          );
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+  else{
+    // AsyncStorage.setItem(
+    //   "filaInicioFinal",
+    //   coordenadaListView.toString()
+    // );
+
+    Actions.popTo("GestionCatalogoProductos")
+  }
 
   return {
     type: ActionTypes.GESTION_CATALOGO_PRODUCTOS
   };
 };
 
-const productoRevisado = (nombreProducto, nombreComercio) => {
+const productoRevisado = (nombreProducto, nombreComercio, numeroProductosRevisables) => {
   fetch("https://thegreenways.es/revisadoProducto.php", {
     method: "POST",
     headers: {
@@ -457,7 +488,34 @@ const productoRevisado = (nombreProducto, nombreComercio) => {
   })
     .then(response => response.json())
     .then(responseJson => {
-      if (responseJson == "revisado") {
+      if (responseJson === "revisado") {
+
+     //   alert(numeroProductosRevisables);
+
+        if(numeroProductosRevisables === 0)
+        {
+          fetch("https://thegreenways.es/revisadoCatalogoPorNombreComercio.php", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              nombreComercio: nombreComercio
+            })
+          })
+          .then(response => response.json())
+          .then(responseJson2 => {
+
+            if (responseJson2 === "revisado") {
+
+            }
+            else {
+              Alert.alert("Aviso", responseJson);
+            }
+
+          })
+        }
       } else {
         Alert.alert("Aviso", responseJson);
       }
@@ -1197,5 +1255,7 @@ export default {
   eliminarProductoPagProducto,
   eliminarDenuncia,
   goCatalogoProductosAdmin,
+  resetearClicks,
+  resetearClicksCategorias,
   volverInicio
 };

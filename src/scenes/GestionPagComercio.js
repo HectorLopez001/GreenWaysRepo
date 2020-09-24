@@ -143,7 +143,9 @@ class GestionPagComercio extends Component {
           AsyncStorage.setItem(
             "filaInicioPagComercioFinal",
             (0).toString()
-          );          
+          );       
+          
+          this.props.resetearClicks();          
         }
       })
       .catch(error => {
@@ -432,7 +434,8 @@ const mapDispatchToProps = dispatch => {
     volverInicio: () =>
       dispatch(GestionComerciosActions.volverInicio()),
     volverGestionComercios: () =>
-      dispatch(GestionComerciosActions.goGestionComercios2())
+      dispatch(GestionComerciosActions.goGestionComercios2()),
+    resetearClicks:() => dispatch(GestionComerciosActions.resetearClicks())
   };
 };
 

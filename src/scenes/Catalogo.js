@@ -252,6 +252,8 @@ class Catalogo extends Component {
           }
         })
     }
+
+
   }
 
   async removeItemValue(key) {
@@ -356,7 +358,9 @@ class Catalogo extends Component {
                   }
                   style={styles.dropdown_2}
                   textStyle={styles.dropdown_2_text}
-                  dropdownStyle={styles.dropdown_2_dropdown}
+                  dropdownStyle={[styles.dropdown_2_dropdown, {
+                    height: this.state.categorias.split(",,,").length >= 3 ? winHeight * 0.21 : (this.state.categorias.split(",,,").length + 1) * winHeight * 0.053
+                  }]}
                   options={["TODO"].concat(this.state.categorias.split(",,,").sort())}
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
@@ -801,7 +805,6 @@ const styles = StyleSheet.create({
   dropdown_2_dropdown: {
     justifyContent: "center",
     width: winWidth * 0.43,
-    height: winHeight * 0.21,
     left: winWidth * 0.544,
     borderColor: "#79B700",
     borderWidth: 2,

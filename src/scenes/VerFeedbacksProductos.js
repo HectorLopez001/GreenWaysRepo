@@ -63,17 +63,13 @@ class VerFeedbacksProductos extends Component {
   }
 
   async componentDidMount() {
+
+    this.props.cambiarCategoria("TODO");
+
     await AsyncStorage.getItem("name").then(value => {
       this.setState({
         nombreUsuario: value
       });
-    });
-
-    await AsyncStorage.getItem("categoriaProductoFeedback").then(value => {
-      if(value === null)
-      {
-        this.props.cambiarCategoria("TODO");
-      }
     });
 
     return fetch("https://thegreenways.es/traerCategoriasComercio.php", {
@@ -106,7 +102,7 @@ class VerFeedbacksProductos extends Component {
         )
           .then(response => response.json())
           .then(responseJson => {
-            if (responseJson == "No Results Found") {
+            if (responseJson === "No Results Found") {
               // this.setState({
               //    // notaMedia: 0,
               //   //  isStorageLoaded: true
@@ -175,12 +171,10 @@ class VerFeedbacksProductos extends Component {
                 contador2 += 1;
               }
 
-              this.setState(
-                {
+              this.setState({
                   datas: datasNuevo,
               //    isStorageLoaded: true
-                }
-              );
+                });
 
               return fetch(
                 "https://thegreenways.es/listaProductosRevisadosFeedbacksVendedor.php",
@@ -210,12 +204,10 @@ class VerFeedbacksProductos extends Component {
                     }
                   }
 
-                  this.setState(
-                    {
+                  this.setState({
                       datas2: responseJson2,
                       isStorageLoaded: true
-                    }
-                  );
+                    });
                 })
             }
           })
@@ -227,20 +219,19 @@ class VerFeedbacksProductos extends Component {
           this.setState({
             isStorageLoaded: true
           });
+
         }
+       // this.props.cambiarCategoria("TODO");
   })
   }
 
-
-  // "categoria" finalmente no es utilizado ya que en este caso es suficiente con saber si ha sido cambiado el item 
-  // de AsyncStorage "categoriaProductoFeedback" (se hace remove del item justo antes de entrar a esta pantalla).
   GetItem(nombreProducto, nota, categoria)
   {
 
     if(nota !== undefined)
     {
       AsyncStorage.setItem("nombreProducto", nombreProducto);
-      AsyncStorage.setItem("categoriaProductoFeedback", "cambiada");
+
       this.props.goVerFeedbacksProducto();
     }
     else{
@@ -378,7 +369,9 @@ class VerFeedbacksProductos extends Component {
                   }
                   style={styles.dropdown_2}
                   textStyle={styles.dropdown_2_text}
-                  dropdownStyle={styles.dropdown_2_dropdown}
+                  dropdownStyle={[styles.dropdown_2_dropdown, {
+                    height: this.state.categorias.split(",,,").length >= 3 ? winHeight * 0.21 : (this.state.categorias.split(",,,").length + 1) * winHeight * 0.053
+                  }]}
                   options={["TODO"].concat(this.state.categorias.split(",,,").sort())}
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
@@ -400,7 +393,7 @@ class VerFeedbacksProductos extends Component {
             }}
           />
 
-          {this.state.datas === null ? (
+          {this.state.datas2 === null ? (
             <View
               style={{
                 height: "80.5%",
@@ -717,9 +710,7 @@ const styles = StyleSheet.create({
   },
   dropdown_2_dropdown: {
     justifyContent: "center",
-    // alignItems: "center",
     width: winWidth * 0.43,
-    height: winHeight * 0.21,
     left: winWidth * 0.544,
     borderColor: "#79B700",
     borderWidth: 2,

@@ -69,8 +69,6 @@ class GestionCatalogoProductos extends Component {
     // AsyncStorage.setItem("sceneComerciosAnterior", "listaComercios");
 
     this.props.goCatalogoProductosAdmin();
-
-    //Actions.CatalogoProductosAdmin();
   }
 
   volverInicio = () => {
@@ -174,10 +172,7 @@ class GestionCatalogoProductos extends Component {
             );
           }
         }
-        // setTimeout(() => {
-        //   this.cambioColor();
-        //   //  this.props.revisadosProductos(this.state.nombreComercio);
-        // }, 1000);
+
       })
       .catch(error => {
         console.error(error);
@@ -208,10 +203,6 @@ class GestionCatalogoProductos extends Component {
     ).start();
   }
 
-  // clickado(nombreComercio) {
-  //   // alert(nombreProducto);
-  //   this.props.clickado(nombreComercio);
-  // }
 
   render() {
 
@@ -222,7 +213,6 @@ class GestionCatalogoProductos extends Component {
       outputRange: ["rgba(121, 183, 0, 0.15)", "rgba(121, 183, 0, 0.35)"]
     });
 
-    let { click, flicker } = this.props;
     let { isStorageLoaded } = this.state;
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
@@ -310,10 +300,8 @@ class GestionCatalogoProductos extends Component {
                         marginTop: 5,
                         marginBottom: 5,
                         backgroundColor:
-                          rowData.revisarCatalogo == "0" &&
-                          !click.includes(rowData.nombreComercio) //&& flicker === "GestionCatalogoProductos"
-                            ? // click != rowData.nombreProducto
-                              coloro
+                          rowData.revisarCatalogo == "0"
+                            ? coloro
                             : null
                       }}
                     >
@@ -368,8 +356,8 @@ class GestionCatalogoProductos extends Component {
 
 const mapStateToProps = state => {
   return {
-    click: state.gestionComercios.click,
-    flicker: state.mainAdmin.flicker
+    // click: state.gestionComercios.click,
+    // flicker: state.mainAdmin.flicker
   };
 };
 
@@ -377,8 +365,6 @@ const mapDispatchToProps = dispatch => {
   return {
     goGestionComercios: () =>
       dispatch(GestionComerciosActions.goGestionComercios2()),
-    // clickado: nombreComercio =>
-    //   dispatch(GestionComerciosActions.clickado(nombreComercio)),
     goCatalogoProductosAdmin: () =>
       dispatch(GestionComerciosActions.goCatalogoProductosAdmin()),
     volverInicio: () =>

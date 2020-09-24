@@ -477,11 +477,10 @@ class Modificar extends Component {
                     }
                   }}
                   textStyle={styles.dropdown_2_text}
-                  dropdownStyle={styles.dropdown_2_dropdown}
+                  dropdownStyle={[styles.dropdown_2_dropdown, {
+                    height: this.state.categorias.split(",,,").length >= 4 ? winHeight * 0.21 : this.state.categorias.split(",,,").length * winHeight * 0.053
+                  }]}
                   options={this.state.categorias.split(",,,").sort()}
-                  // renderButtonText={rowData =>
-                  //   this._dropdown_2_renderButtonText(rowData)
-                  // }
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(
@@ -737,11 +736,10 @@ class Modificar extends Component {
                     }
                   }}
                   textStyle={styles.dropdown_2_text}
-                  dropdownStyle={styles.dropdown_2_dropdown}
+                  dropdownStyle={[styles.dropdown_2_dropdown, {
+                    height: this.state.categorias.split(",,,").length >= 4 ? winHeight * 0.21 : this.state.categorias.split(",,,").length * winHeight * 0.053
+                  }]}
                   options={this.state.categorias.split(",,,").sort()}
-                  // renderButtonText={rowData =>
-                  //   this._dropdown_2_renderButtonText(rowData)
-                  // }
                   renderRow={this._dropdown_2_renderRow.bind(this)}
                   renderSeparator={(sectionID, rowID, adjacentRowHighlighted) =>
                     this._dropdown_2_renderSeparator(
@@ -901,7 +899,7 @@ class Modificar extends Component {
   }
 
   _dropdown_2_renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    if (rowID == DEMO_OPTIONS_2.length - 1) return;
+    if (rowID == this.state.categorias.split(",,,").length - 1) return;
     let key = `spr_${rowID}`;
     return <View style={styles.dropdown_2_separator} key={key} />;
   }
@@ -1063,7 +1061,6 @@ const styles = StyleSheet.create({
   },
   dropdown_2_dropdown: {
     width: winWidth * 0.68,
-    height: winHeight * 0.21,
     borderColor: "#79B700",
     borderWidth: 2,
     borderRadius: 3

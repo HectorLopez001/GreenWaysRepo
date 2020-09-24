@@ -68,7 +68,8 @@ class MainAdmin extends Component {
     })
       .then(response => response.json())
       .then(responseJson => {
-        if (responseJson == "No Results Found") {
+        if (responseJson === "No Results Found") {
+
           return fetch(
             "https://thegreenways.es/numeroUsuariosCompradoresRevisables.php",
             {
@@ -82,7 +83,8 @@ class MainAdmin extends Component {
           )
             .then(response2 => response2.json())
             .then(responseJson2 => {
-              if (responseJson2 == "No Results Found") {
+
+              if (responseJson2 === "No Results Found") {
                 this.setState(
                   {
                     hayFeedbacksOUsuariosCompradores: "no"
@@ -108,7 +110,7 @@ class MainAdmin extends Component {
           });
           this.parteDatosComercios();
 
-          this.props.flick();
+          //this.props.flick();
         } 
             
       })
@@ -157,8 +159,9 @@ class MainAdmin extends Component {
         body: JSON.stringify({})
       });
       const responseJson3 = await response3.json();
-      if (responseJson3 == "No Results Found") {
-        return fetch("https://thegreenways.es/numeroHomeComerciosYCatalogosRevisables.php", {
+      if (responseJson3 === "No Results Found") {        
+
+        return fetch("https://thegreenways.es/numeroHomeComerciosYCatalogosYCategoriasRevisables.php", {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -168,7 +171,7 @@ class MainAdmin extends Component {
         })
           .then(response4 => response4.json())
           .then(responseJson4 => {
-            if (responseJson4 == "No Results Found") {
+            if (responseJson4 === "No Results Found") {
               this.setState({
                 hayDenunciasOHomeComerciosOCatalogos: "no",
                 isStorageLoaded: true

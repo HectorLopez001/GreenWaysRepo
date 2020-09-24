@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import AsyncStorage from '@react-native-community/async-storage';
 
-import { SearchBar } from "react-native-elements";
-
 import {
   StyleSheet,
   Text,
@@ -18,8 +16,8 @@ import {
 } from "react-native";
 
 import CatalogoActions from "../actions/Catalogo";
-
 import Loader from "../components/Loader";
+import { HeaderBackButton } from 'react-navigation-stack'
 
 const winWidth = Dimensions.get("window").width;
 const winHeight2 = Dimensions.get("window").height;
@@ -30,7 +28,7 @@ const ITEM_HEIGHT = winHeight * 0.1 + 2;
 
 class CategoriasComercio extends Component {
   static navigationOptions = {
-    title: "Gestionar categorías del comercio",
+    title: "Gestionar categorías",
     headerRight: (
       <View>
         <TouchableOpacity
@@ -51,7 +49,14 @@ class CategoriasComercio extends Component {
           />
         </TouchableOpacity>
       </View>
-    )
+    ),
+    headerLeft: (
+			<HeaderBackButton
+        onPress={() => {
+              Actions.CategoriasYCatalogo();
+          }}>
+      </HeaderBackButton> 
+		)
   };
 
   constructor(props) {
@@ -60,7 +65,8 @@ class CategoriasComercio extends Component {
     this.state = {
       nombreUsuario: null,
       categoriaNueva: null,
-      categoriaModificar: null
+      categoriaModificar: null,
+      hayCategoriasComercioIniciales: null
     };
   }
 
@@ -111,8 +117,16 @@ class CategoriasComercio extends Component {
 
         if(stringCategorias !== null && stringCategorias !== "")
         {
-         // alert(stringCategorias);
           arrayCategorias = stringCategorias.split(",,,").sort();
+
+          this.setState({
+            hayCategoriasComercioIniciales: true
+          });
+        }
+        else {
+          this.setState({
+            hayCategoriasComercioIniciales: false
+          });
         }
 
         //Creamos un nuevo array de objetos el cual usaremos para construir el FlatList mas adelante
@@ -141,6 +155,7 @@ class CategoriasComercio extends Component {
 
   render() {
     let {categoriaCatalogo, categoriasComercio, isLoadingCategoria} = this.props;
+    let {hayCategoriasComercioIniciales} = this.state
     if (isLoadingCategoria) {
       return <Loader loading={true} />;
     } else {
@@ -566,7 +581,28 @@ class CategoriasComercio extends Component {
           >
             <TouchableOpacity
               onPress={() => {
-                Actions.pop()
+
+                if(hayCategoriasComercioIniciales)
+                {
+                  if(categoriasComercio.length === 0)
+                  {
+                    Actions.CategoriasYCatalogo();
+                  }
+                  else{
+                    Actions.pop()
+                  }
+                }
+                else {
+                  if(categoriasComercio.length > 0)
+                  {
+                    Actions.CategoriasYCatalogo();
+                  }
+                  else{
+                    Actions.pop()
+                  }
+                }
+
+
               }}
             >
               <View

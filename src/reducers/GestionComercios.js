@@ -101,19 +101,18 @@ export default (state = initialState, action) => {
         categoriasComercio: [...state.categoriasComercio ]
       };
 
+      case ActionTypes.RESETEAR_NUMERO_CLICKS_CATEGORIAS:
 
-    /*  case ActionTypes.FILA_CLICKADA2:
-      return Object.assign({}, ...state, {
-        // click: action.click
-        click2: [...state.click2, action.click2]
-      });*/
+        return {...state,
+          clickCategorias: []
+        };
 
-    /* case ActionTypes.NO_ERROR:
-      return Object.assign({}, state, {
-        campoError: ""
-      });
-      
-      */
+      case ActionTypes.RESETEAR_NUMERO_CLICKS:
+
+        return {...state,
+          click: []
+        };
+
 
     default:
       return state;

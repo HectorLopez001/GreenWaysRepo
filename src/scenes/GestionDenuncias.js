@@ -142,6 +142,7 @@ class GestionDenuncias extends Component {
 
           //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
           AsyncStorage.setItem("filaInicioDenunciaFinal", (0).toString());
+          this.props.resetearClicks();
         }
 
         // setTimeout(() => {
@@ -470,7 +471,8 @@ const mapDispatchToProps = dispatch => {
     volverInicio: () =>
       dispatch(GestionComerciosActions.volverInicio()),
     volverGestionComercios: () =>
-      dispatch(GestionComerciosActions.goGestionComercios2())
+      dispatch(GestionComerciosActions.goGestionComercios2()),
+    resetearClicks:() => dispatch(GestionComerciosActions.resetearClicks())
   };
 };
 

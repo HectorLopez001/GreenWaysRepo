@@ -52,7 +52,9 @@ class GestionCategorias2 extends Component {
     this.state = {
       nombreComercio: null,
       idComercio: null,
-      backgroundColor: new Animated.Value(0)
+      backgroundColor: new Animated.Value(0),
+      clicsPantallaActual: false,
+ //     numeroCategoriasRevisables: 0
     };
   }
 
@@ -119,6 +121,11 @@ class GestionCategorias2 extends Component {
 
           if(Object.entries(categoriasRevisables).length !== 0)
           {
+
+            // this.setState({
+            //   numeroCategoriasRevisables: categoriasRevisables.length
+            // })
+
             for (let i=0 ; i<categoriasRevisables.length ; i++)
             {
 
@@ -166,6 +173,7 @@ class GestionCategorias2 extends Component {
           this.props.actualizarNumeroCategoriasRevisables(categoriasRevisablesEnObjetos.length)
           this.props.actualizarCategorias(categoriasFinal);
           this.activarLoader(false);
+          this.props.resetearClicks();
         }
       })
       .catch(error => {
@@ -199,6 +207,13 @@ class GestionCategorias2 extends Component {
 
   clickado(nombreCategoriaConIdComercio) {
     this.props.clickado(nombreCategoriaConIdComercio);
+
+    if(this.state.clicsPantallaActual === false){
+            
+      this.setState ({
+        clicsPantallaActual: true
+      }); 
+    }
   }
 
   render() {
@@ -426,7 +441,12 @@ class GestionCategorias2 extends Component {
             >
               <TouchableOpacity
                 onPress={() => {
-                  this.props.goGestionCategorias(this.props.numeroCategoriasRevisables, this.state.idComercio, this.state.nombreComercio);
+                  this.props.goGestionCategorias(
+                    this.props.numeroCategoriasRevisables,
+                    this.state.idComercio,
+                    this.state.nombreComercio,
+                    this.state.clicsPantallaActual
+                  );
                 }}
               >
                 <View
@@ -464,8 +484,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    goGestionCategorias: (numeroCategoriasRevisables, idComercio, nombreComercio) =>
-        dispatch(GestionComerciosActions.goGestionCategoriasBotonVolver(numeroCategoriasRevisables, idComercio, nombreComercio)),
+    goGestionCategorias: (numeroCategoriasRevisables, idComercio, nombreComercio, clicsPantallaActual) =>
+        dispatch(GestionComerciosActions.goGestionCategoriasBotonVolver(numeroCategoriasRevisables, idComercio, nombreComercio, clicsPantallaActual)),
     mensajeEliminar: (nombreComercio) => dispatch(GestionComerciosActions.mensajeEliminarComercioDesdeGestionCategoria(nombreComercio)),
     mensajeEliminar2: (idComercio, nombreCategoria) => dispatch(GestionComerciosActions.mensajeEliminarCategoria(idComercio, nombreCategoria)),
     revisadasCategorias: nombreComercio => dispatch(GestionComerciosActions.revisadasCategorias(nombreComercio)),
@@ -476,7 +496,8 @@ const mapDispatchToProps = dispatch => {
     actualizarCategorias: (categorias) => dispatch(GestionComerciosActions.actualizarCategorias(categorias)),
     activarLoader: (bool) => dispatch(GestionComerciosActions.categoriasIsLoading(bool)),
     actualizarNumeroCategoriasRevisables: (numeroCategoriasRevisables) => 
-        dispatch(GestionComerciosActions.actualizarNumeroCategoriasRevisables(numeroCategoriasRevisables))
+        dispatch(GestionComerciosActions.actualizarNumeroCategoriasRevisables(numeroCategoriasRevisables)),
+    resetearClicks:() => dispatch(GestionComerciosActions.resetearClicksCategorias())
   };
 };
 

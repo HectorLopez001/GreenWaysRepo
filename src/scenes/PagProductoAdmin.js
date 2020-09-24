@@ -113,15 +113,13 @@ class PagProductoAdmin extends Component {
             isStorageLoaded: true,
             revisado: responseJson[0].revisar,
             revisadoInicial:
-              responseJson[0].revisar == "0" ? responseJson[0].revisar : null
-          },
-          function() {}
-        );
+              responseJson[0].revisar === "0" ? responseJson[0].revisar : null
+        });
 
-        this.props.productoRevisado(
-          this.state.nombreProducto,
-          this.state.nombreComercio
-        );
+        // this.props.productoRevisado(
+        //   this.state.nombreProducto,
+        //   this.state.nombreComercio
+        // );
       })
       .catch(error => {
         console.error(error);
@@ -383,10 +381,10 @@ const mapDispatchToProps = dispatch => {
       ),
     volverCatalogo: revisar =>
       dispatch(GestionComerciosActions.volverCatalogo(revisar)),
-    productoRevisado: (nombreProducto, nombreComercio) =>
-      dispatch(
-        GestionComerciosActions.productoRevisado(nombreProducto, nombreComercio)
-      )
+    // productoRevisado: (nombreProducto, nombreComercio) =>
+    //   dispatch(
+    //     GestionComerciosActions.productoRevisado(nombreProducto, nombreComercio)
+    //   )
   };
 };
 

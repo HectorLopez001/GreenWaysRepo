@@ -63,7 +63,7 @@ class CatalogoProductosAdmin extends Component {
       datas: null,
       clicsPantallaActual: false,
       isStorageLoaded: false,
-      cambio: null
+      numeroProductosRevisables: 0
     };
   }
 
@@ -144,6 +144,28 @@ class CatalogoProductosAdmin extends Component {
         }
         else
         {
+
+          let auxNumeroProductosRevisables = 0;
+          for(let i=0 ; i<responseJson.length ; i++)
+          {
+
+           // alert(responseJson[0].revisar); 
+            if(responseJson[i].revisar === "0")
+            {
+              auxNumeroProductosRevisables++;
+            }
+          }
+
+          if(auxNumeroProductosRevisables > 0)
+          {
+            this.setState({
+              numeroProductosRevisables: auxNumeroProductosRevisables
+            })
+          }
+          
+
+
+
           if (this.state.coordenadaListViewPagActual === "0" || this.state.coordenadaListViewPagActual === null)
           {
             this.setState({
@@ -172,6 +194,7 @@ class CatalogoProductosAdmin extends Component {
 
           //Reseteamos filaInicio a 0 para que cuando volvamos a recargar la página no vuelva a una posicion indicada anteriormente.
           AsyncStorage.setItem("filaInicioPagActualFinal", (0).toString());
+          this.props.resetearClicks();
         }
 
         // setTimeout(() => {
@@ -218,6 +241,20 @@ class CatalogoProductosAdmin extends Component {
       }); 
     }
   }
+
+ productoRevisado(nombreProducto, nombreComercio, numeroProductosRevisables) {
+
+    this.setState({
+      numeroProductosRevisables: this.state.numeroProductosRevisables -1
+    })
+
+    this.props.productoRevisado(
+      nombreProducto,
+      nombreComercio,
+      numeroProductosRevisables-1
+    )
+  }
+
 
   render() {
 
@@ -299,7 +336,12 @@ class CatalogoProductosAdmin extends Component {
             renderItem={({ item: rowData, index: rowNumber }) => (
               <TouchableOpacity
                 onPress={() => {
-                  this.clickado(rowData.nombreProducto+rowData.idProducto);
+                  this.clickado(rowData.nombreProducto + rowData.idProducto);
+                  this.productoRevisado(
+                    rowData.nombreProducto,
+                    this.state.nombreComercio,
+                    this.state.numeroProductosRevisables
+                  );
                   this.GetItem(rowData.nombreProducto, rowNumber);
                 }}
               >
@@ -319,8 +361,7 @@ class CatalogoProductosAdmin extends Component {
                     // height: winHeight * 0.25,
                     backgroundColor:
                       rowData.revisar == "0" &&
-                      !click.includes(rowData.nombreProducto+rowData.idProducto) //&& flicker === "CatalogoProductosAdmin"
-                       // click != rowData.nombreProducto
+                      !click.includes(rowData.nombreProducto+rowData.idProducto) 
                         ? coloro
                         : null
                   }}
@@ -376,9 +417,10 @@ class CatalogoProductosAdmin extends Component {
                     >
                       <TouchableOpacity
                         onPress={() => {
-                          this.props.productoRevisado(
+                          this.productoRevisado(
                             rowData.nombreProducto,
-                            this.state.nombreComercio
+                            this.state.nombreComercio,
+                            this.state.numeroProductosRevisables
                           ),
                           this.clickado(rowData.nombreProducto+rowData.idProducto);
                         }}
@@ -553,16 +595,17 @@ const mapDispatchToProps = dispatch => {
       ),
     revisadosProductos: nombreComercio =>
       dispatch(GestionComerciosActions.revisadosProductos(nombreComercio)),
-    productoRevisado: (nombreProducto, nombreComercio) =>
+    productoRevisado: (nombreProducto, nombreComercio, numeroProductosRevisables) =>
       dispatch(
-        GestionComerciosActions.productoRevisado(nombreProducto, nombreComercio)
+        GestionComerciosActions.productoRevisado(nombreProducto, nombreComercio, numeroProductosRevisables)
       ),
     clickado: nombreProducto =>
       dispatch(GestionComerciosActions.clickado(nombreProducto)),
     volverInicio: () =>
       dispatch(GestionComerciosActions.volverInicio()),
     volverGestionCatalogoProductos: () =>
-      dispatch(GestionComerciosActions.goGestionCatalogoProductos())
+      dispatch(GestionComerciosActions.goGestionCatalogoProductos()),
+    resetearClicks:() => dispatch(GestionComerciosActions.resetearClicks())
   };
 };
 

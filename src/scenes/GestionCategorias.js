@@ -175,17 +175,6 @@ class GestionCategorias extends Component {
     ).start();
   }
 
-  // clickado(comercio) {
-  //   this.props.clickado(comercio);
-
-  //   if(this.state.clicsPantallaActual === false){
-            
-  //     this.setState ({
-  //       clicsPantallaActual: true
-  //     }); 
-  //   }
-  // }
-
 
   GetItem(idComercio, nombreComercio, rowNumber) {
     //Alert.alert(idComercio);
@@ -207,7 +196,7 @@ class GestionCategorias extends Component {
     });
 
     let { isStorageLoaded } = this.state;
-    let { click, flicker } = this.props;
+    let { flicker } = this.props;
     if (!isStorageLoaded) {
       return <Loader loading={true} />;
     } else {
@@ -277,7 +266,6 @@ class GestionCategorias extends Component {
             renderItem={({ item: rowData, index: rowNumber }) => (
               <TouchableOpacity
                 onPress={() => {
-                 // this.clickado(rowData.categoria);
                   this.GetItem(rowData.idComercio, rowData.nombreComercio, rowNumber);
                 }}
               >
@@ -291,7 +279,6 @@ class GestionCategorias extends Component {
                     marginBottom: 5,
                     backgroundColor:
                       rowData.categoriasComercioRevisables !== null && rowData.categoriasComercioRevisables !== ""
-                      //&& !click.includes(rowData.nombreComercio) //&& flicker === "GestionPagComercio"
                         ? coloro
                         : null
                   }}
@@ -349,7 +336,7 @@ const mapStateToProps = state => {
     // hasError: state.register.hasError,
     // isLoading: state.register.isLoading,
     // flicker: state.mainAdmin.flicker
-    click: state.gestionComercios2.click,
+    // click: state.gestionComercios2.click,
   };
 };
 

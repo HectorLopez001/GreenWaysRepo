@@ -140,6 +140,8 @@ class GestionPerfilesUsuario extends Component {
             "filaInicioPerfilUsuarioFinal",
             (0).toString()
           );
+
+          this.props.resetearClicks();          
         }
 
         // setTimeout(() => {
@@ -429,7 +431,8 @@ const mapDispatchToProps = dispatch => {
     volverInicio: () =>
       dispatch(GestionUsuariosRegistradosActions.volverInicio()),
     volverGestionUsuariosRegistrados: () =>
-      dispatch(GestionUsuariosRegistradosActions.goGestionUsuariosRegistrados3())
+      dispatch(GestionUsuariosRegistradosActions.goGestionUsuariosRegistrados3()),
+    resetearClicks:() => dispatch(GestionUsuariosRegistradosActions.resetearClicks())
   };
 };
 

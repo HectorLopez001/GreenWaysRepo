@@ -16,7 +16,7 @@ const goCatalogoCliente = (categoriaSeleccionada, productos, categorias) => {
   );
 
   AsyncStorage.setItem(
-    "categoriasComercio",
+    "categoriasComercioCliente",
     categorias
   );
 
@@ -38,7 +38,7 @@ const goCatalogoClienteFast = (categoriaSeleccionada, productos, categorias) => 
   );
 
   AsyncStorage.setItem(
-    "categoriasComercio",
+    "categoriasComercioCliente",
     categorias
   );
 
